@@ -60,6 +60,7 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
   }
 
   const specs = [
+    { label: 'Серия', value: radiatorType },
     { label: 'Модель', value: selected.model },
     { label: 'Секции', value: selected.sections },
     { label: 'Рядность', value: `${selected.tubes} труб.` },
@@ -69,11 +70,11 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
     { label: 'Длина', value: `${selected.length} мм` },
     { label: 'Высота', value: `${selected.height} мм` },
     { label: 'Вес', value: `${selected.totalWeight} кг` },
-    { label: 'Цвет', value: colorLabel },
-    { label: 'Давление', value: highPressure ? '16 бар' : '10 бар' },
     ventSpec,
     ...(drainValve ? [{ label: 'Резьбовое под дренаж (Е)', value: `4 / поз. ${position === '3' ? '4' : '2'} / ${connSize}` }] : []),
+    { label: 'Давление', value: highPressure ? '16 бар' : '10 бар' },
     { label: 'Крепления', value: selected.bracketCount ? `KLK - ${selected.bracketCount} шт` : '—' },
+    { label: 'Цвет', value: colorLabel },
     { label: 'Q ном ΔT60', value: `${selected.qNomTotal} Вт` },
     { label: `Q расч ΔT${deltaT.toFixed(0)}`, value: `${selected.qRealTotal} Вт`, isPrimary: true },
   ];

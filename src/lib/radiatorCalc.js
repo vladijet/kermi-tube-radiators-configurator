@@ -111,13 +111,14 @@ export function buildArticle(series, model, sections, connectionGroupId, connect
   } else {
     ventValue = `4 / поз. ${position} / ${ventConnSize}`;
   }
-  const parts = ['Kermi', series, modelPart, connStr, colorPart];
+  const parts = ['Kermi', series, modelPart, connStr];
   parts.push(ventValue);
   if (drainValve) {
     parts.push(`4 / поз. ${position === '3' ? '4' : '2'} / ${connSize}`);
   }
   parts.push(highPressure ? '16' : '10');
   if (includeBracketKLK) parts.push('KLK');
+  parts.push(colorPart);
   return parts.filter(Boolean).join(' - ');
 }
 
