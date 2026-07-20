@@ -43,7 +43,7 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
     ventSpec = { label: 'Воздухоотводчик (L)', value };
   } else {
     // Checkbox not selected — "Штуцер воздух" (code 4)
-    ventSpec = { label: 'Штуцер воздух (L)', value: `4 / поз. ${position} / ${ventConnSize}` };
+    ventSpec = { label: 'Футорка под воздух (L)', value: `4 / поз. ${position} / ${ventConnSize}` };
   }
 
   const connDisplay = valveType ? `${connCode} ${valveType}` : connCode;
