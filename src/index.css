@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 228 9% 19%;
+    --foreground: 220 14% 93%;
+    --card: 228 8% 23%;
+    --card-foreground: 220 14% 93%;
+    --popover: 228 8% 23%;
+    --popover-foreground: 220 14% 93%;
+    --primary: 66 100% 40%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 228 7% 27%;
+    --secondary-foreground: 220 14% 93%;
+    --muted: 228 7% 27%;
+    --muted-foreground: 225 6% 60%;
+    --accent: 228 7% 30%;
+    --accent-foreground: 220 14% 93%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 228 7% 32%;
+    --input: 228 7% 27%;
+    --ring: 66 100% 40%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --font-heading: ui-sans-serif, system-ui, sans-serif;
+    --font-body: ui-sans-serif, system-ui, sans-serif;
+    --font-display: ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --sidebar-background: 228 9% 17%;
+    --sidebar-foreground: 220 14% 93%;
+    --sidebar-primary: 66 100% 40%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 228 7% 25%;
+    --sidebar-accent-foreground: 220 14% 93%;
+    --sidebar-border: 228 7% 30%;
+    --sidebar-ring: 66 100% 40%;
+  }
+
+  .dark {
+    --background: 228 9% 19%;
+    --foreground: 220 14% 93%;
+    --card: 228 8% 23%;
+    --card-foreground: 220 14% 93%;
+    --popover: 228 8% 23%;
+    --popover-foreground: 220 14% 93%;
+    --primary: 66 100% 40%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 228 7% 27%;
+    --secondary-foreground: 220 14% 93%;
+    --muted: 228 7% 27%;
+    --muted-foreground: 225 6% 60%;
+    --accent: 228 7% 30%;
+    --accent-foreground: 220 14% 93%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 228 7% 32%;
+    --input: 228 7% 27%;
+    --ring: 66 100% 40%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 228 9% 17%;
+    --sidebar-foreground: 220 14% 93%;
+    --sidebar-primary: 66 100% 40%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 228 7% 25%;
+    --sidebar-accent-foreground: 220 14% 93%;
+    --sidebar-border: 228 7% 30%;
+    --sidebar-ring: 66 100% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Hide number input spinners */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer utilities {
+  /* Custom scrollbar */
+  .lg\:overflow-y-auto {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  .lg\:overflow-y-auto::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .lg\:overflow-y-auto::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .lg\:overflow-y-auto::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  .lg\:overflow-y-auto:hover::-webkit-scrollbar-thumb {
+    background: hsl(228 7% 35%);
+  }
+  .lg\:overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: hsl(228 7% 45%);
+  }
+}
+
+@keyframes flash-highlight {
+  0% { background-color: hsl(var(--primary) / 0.3); }
+  100% { background-color: transparent; }
+}
+
+.animate-flash {
+  animation: flash-highlight 0.8s ease-out;
+}

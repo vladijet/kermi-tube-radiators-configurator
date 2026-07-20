@@ -1,0 +1,65 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "article": {
+      "type": "string",
+      "title": "\u0410\u0440\u0442\u0438\u043a\u0443\u043b"
+    },
+    "model": {
+      "type": "string",
+      "title": "\u041c\u043e\u0434\u0435\u043b\u044c"
+    },
+    "sections": {
+      "type": "number",
+      "title": "\u041a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u0441\u0435\u043a\u0446\u0438\u0439"
+    },
+    "radiator_config": {
+      "type": "object",
+      "title": "\u041f\u043e\u043b\u043d\u0430\u044f \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044f"
+    },
+    "dealer_id": {
+      "type": "string",
+      "title": "ID \u0434\u0438\u043b\u0435\u0440\u0430"
+    },
+    "dealer_name": {
+      "type": "string",
+      "title": "\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0434\u0438\u043b\u0435\u0440\u0430"
+    },
+    "dealer_city": {
+      "type": "string",
+      "title": "\u0413\u043e\u0440\u043e\u0434 \u0434\u0438\u043b\u0435\u0440\u0430"
+    },
+    "contact_name": {
+      "type": "string",
+      "title": "\u0418\u043c\u044f \u043a\u043b\u0438\u0435\u043d\u0442\u0430"
+    },
+    "contact_phone": {
+      "type": "string",
+      "title": "\u0422\u0435\u043b\u0435\u0444\u043e\u043d \u043a\u043b\u0438\u0435\u043d\u0442\u0430"
+    },
+    "contact_email": {
+      "type": "string",
+      "title": "Email \u043a\u043b\u0438\u0435\u043d\u0442\u0430"
+    },
+    "total_price": {
+      "type": "number",
+      "title": "\u0418\u0442\u043e\u0433\u043e\u0432\u0430\u044f \u0446\u0435\u043d\u0430, EUR"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "processed",
+        "completed"
+      ],
+      "default": "new",
+      "title": "\u0421\u0442\u0430\u0442\u0443\u0441"
+    }
+  },
+  "required": [
+    "article",
+    "contact_name",
+    "contact_phone"
+  ]
+}
