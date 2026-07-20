@@ -81,7 +81,9 @@ export function calculateTotalPrice(basePrice, colorCode, connectionGroupId, con
 
 export function buildArticle(series, model, sections, connectionGroupId, connectionCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK) {
   const variant = findConnectionVariant(connectionGroupId, connectionCode);
-  const connStr = variant?.valveType ? `${connectionCode} ${variant.valveType}` : (connectionCode || '');
+  const connDisplay = variant?.valveType ? `${connectionCode} ${variant.valveType}` : (connectionCode || '');
+  const connPrefix = series === 'RRV' ? '31' : '2';
+  const connStr = `${connPrefix} / ${connDisplay} / ${connSize}`;
   const modelPart = model ? `${model} / ${sections}` : '';
   const NO_RAL_CODES = ['TF', 'ZN'];
   const WHITE_RAL_CODES = ['SL', 'ZL'];
