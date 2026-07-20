@@ -27,10 +27,10 @@ export default function Configurator() {
   const [flowTemp, setFlowTemp] = useState(75);
   const [returnTemp, setReturnTemp] = useState(65);
   const [airTemp, setAirTemp] = useState(20);
-  const [minHeight, setMinHeight] = useState(300);
-  const [maxHeight, setMaxHeight] = useState(900);
-  const [minLength, setMinLength] = useState(400);
-  const [maxLength, setMaxLength] = useState(1500);
+  const [minHeight, setMinHeight] = useState(400);
+  const [maxHeight, setMaxHeight] = useState(600);
+  const [minLength, setMinLength] = useState(800);
+  const [maxLength, setMaxLength] = useState(1000);
   const [selectedTubes, setSelectedTubes] = useState(null);
   const [height, setHeight] = useState(550);
   const [selectedSections, setSelectedSections] = useState(null);
@@ -59,8 +59,8 @@ export default function Configurator() {
     setFlowTemp(75);
     setReturnTemp(65);
     setAirTemp(20);
-    setMinHeight(300); setMaxHeight(900);
-    setMinLength(400); setMaxLength(1500);
+    setMinHeight(400); setMaxHeight(600);
+    setMinLength(800); setMaxLength(1000);
     setSelectedTubes(null);
     setHeight(600);
     setSelectedSections(null);
