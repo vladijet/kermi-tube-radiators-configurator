@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 
 // Fetches a server-rendered pseudo-3D SVG of the radiator and displays it.
 // Debounced so rapid param changes don't flood the backend.
-export default function RadiatorServerPreview({ sections, height, connectionCode, valveType, color, ventType }) {
+export default function RadiatorServerPreview({ sections, height, connectionCode, valveType, color, ventType, drainValve }) {
   const [svg, setSvg] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +33,7 @@ export default function RadiatorServerPreview({ sections, height, connectionCode
           color: color || '#F4F4F4',
           ventSide,
           ventType: ventType || '',
+          drainValve: drainValve || false,
         });
         if (!cancelled) {
           setSvg(res.data?.svg || '');
@@ -46,7 +47,7 @@ export default function RadiatorServerPreview({ sections, height, connectionCode
       }
     }, 250);
     return () => { cancelled = true; clearTimeout(id); };
-  }, [sections, height, connectionCode, valveType, color, ventType]);
+  }, [sections, height, connectionCode, valveType, color, ventType, drainValve]);
 
   return (
     <div className="relative w-full h-full flex items-center justify-center p-6">

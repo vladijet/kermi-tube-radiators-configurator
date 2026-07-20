@@ -112,6 +112,10 @@ function buildLMarker(x, y) {
   return `<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#CCFF00" text-anchor="middle" dominant-baseline="central">L</text>`;
 }
 
+function buildEMarker(x, y) {
+  return `<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#CCFF00" text-anchor="middle" dominant-baseline="central">E</text>`;
+}
+
 // How far the tube's rounded cap protrudes beyond the manifold's outer edge
 const PROTR = 6;
 
@@ -133,7 +137,7 @@ function calcL3(sections, cc) {
   return ((sections + 1) / 2) * 45 - 25; // cc === '96'
 }
 
-function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType) {
+function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drainValve) {
   const base = colorHex;
   const hi = lighten(base, 0.22);
   const sh = darken(base, 0.28);
@@ -238,6 +242,17 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType) {
     }
   }
 
+  // 3d. Drain valve "E" marker — bottom manifold, same side as the vent/L marker.
+  // Right for N12/N14/N68/N69/N98, left for N34/N32/N86/N89/N96 — matches the table logic.
+  if (drainValve) {
+    const drainRight = ['12', '14', '68', '69', '98'].includes(cc);
+    if (drainRight) {
+      p.push(buildEMarker(hubRightX + ecW + 26, botCy));
+    } else {
+      p.push(buildEMarker(hubLeftX - ecW - 26, botCy));
+    }
+  }
+
   // 4. Connection flow arrows
   const RED = '#E84545';
   const BLUE = '#4DABF7';
@@ -306,8 +321,9 @@ Deno.serve(async (req) => {
     const valveType = String(params.valveType || '');
     const ventSide = String(params.ventSide || '');
     const ventType = String(params.ventType || '');
+    const drainValve = String(params.drainValve || '') === 'true' || params.drainValve === true;
 
-    const svg = buildSvg(sections, H, connectionCode, color, valveType, ventSide, ventType);
+    const svg = buildSvg(sections, H, connectionCode, color, valveType, ventSide, ventType, drainValve);
 
     if (req.method === 'GET') {
       return new Response(svg, {

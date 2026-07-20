@@ -450,6 +450,7 @@ export default function Configurator() {
             valveType={previewValveType}
             color={previewColor}
             ventType={ventType}
+            drainValve={drainValve}
           />
 
 

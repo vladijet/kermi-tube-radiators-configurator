@@ -80,7 +80,7 @@ export default function AirVent({ radiatorType, ventType, setVentType, ventConnS
           onChange={e => setDrainValve(e.target.checked)}
           className="w-4 h-4 rounded accent-primary"
         />
-        <span className="text-[13px] font-semibold text-foreground flex-1">Резьбовое под дренажный кран</span>
+        <span className="text-[13px] font-semibold text-foreground flex-1">Резьбовое под дренажный кран (Е)</span>
         <span className="text-[11px] text-muted-foreground font-medium">+{formatEuro(0)}</span>
       </label>
 
