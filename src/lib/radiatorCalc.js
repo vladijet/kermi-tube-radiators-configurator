@@ -95,11 +95,8 @@ export function buildArticle(series, model, sections, connectionGroupId, connect
   } else {
     colorPart = `${colorCode} / RAL ${ralCode}`;
   }
-  const sizeEntry = CONNECTION_SIZES.find(s => s.code === connSize || s.rrvCode === connSize);
-  const sizeLabel = sizeEntry ? sizeEntry.label : '1/2"';
   const parts = ['Kermi', series, modelPart, connStr, colorPart];
   if (highPressure) parts.push('16');
-  parts.push(sizeLabel);
   if (includeBracketKLK) parts.push('KLK');
   return parts.filter(Boolean).join(' - ');
 }

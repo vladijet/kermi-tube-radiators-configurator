@@ -73,7 +73,7 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
     { label: 'Давление', value: highPressure ? '16 бар' : '10 бар' },
     ventSpec,
     ...(drainValve ? [{ label: 'Резьбовое под дренаж (Е)', value: `4 / поз. ${position === '3' ? '4' : '2'} / ${connSize}` }] : []),
-    { label: 'Крепления', value: selected.bracketCount ? `KLK ${selected.bracketCount} шт` : '—' },
+    { label: 'Крепления', value: selected.bracketCount ? `KLK - ${selected.bracketCount} шт` : '—' },
     { label: 'Q ном ΔT60', value: `${selected.qNomTotal} Вт` },
     { label: `Q расч ΔT${deltaT.toFixed(0)}`, value: `${selected.qRealTotal} Вт`, isPrimary: true },
   ];
