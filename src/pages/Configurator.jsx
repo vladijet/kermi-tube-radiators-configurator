@@ -284,15 +284,15 @@ export default function Configurator() {
     : 0;
   const article = useMemo(() => {
     if (selected) {
-      return buildArticle(radiatorType, selected.model, selected.sections, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK);
+      return buildArticle(radiatorType, selected.model, selected.sections, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve);
     }
     if (selectedSections && results.length > 0) {
       const match = selectedTubes ? results.find(r => r.tubes === selectedTubes) : null;
       const r = match || results[0];
-      return buildArticle(radiatorType, r.model, r.sections, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK);
+      return buildArticle(radiatorType, r.model, r.sections, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve);
     }
-    return buildArticle(radiatorType, '', 0, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK);
-  }, [selected, selectedSections, selectedTubes, results, radiatorType, connGroup, connCode, ralCode, colorCode, ventType, ventPosition, connSize, includeBracketKLK]);
+    return buildArticle(radiatorType, '', 0, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve);
+  }, [selected, selectedSections, selectedTubes, results, radiatorType, connGroup, connCode, ralCode, colorCode, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve]);
 
   const config = { colorCode, connGroup, connCode, highPressure, ventType, ventPosition, deltaT: deltaT.toFixed(1) };
 

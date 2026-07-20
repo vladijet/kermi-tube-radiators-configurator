@@ -79,9 +79,10 @@ export function calculateTotalPrice(basePrice, colorCode, connectionGroupId, con
   return Math.round((basePrice + colorMarkup + connSurcharge + pressureMarkup + ventMarkup) * 100) / 100;
 }
 
-export function buildArticle(series, model, sections, connectionGroupId, connectionCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK) {
+export function buildArticle(series, model, sections, connectionGroupId, connectionCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve) {
   const variant = findConnectionVariant(connectionGroupId, connectionCode);
-  const connDisplay = variant?.valveType ? `${connectionCode} ${variant.valveType}` : (connectionCode || '');
+  const valveType = variant?.valveType || '';
+  const connDisplay = valveType ? `${connectionCode} ${valveType}` : (connectionCode || '');
   const connPrefix = series === 'RRV' ? '31' : '2';
   const connStr = `${connPrefix} / ${connDisplay} / ${connSize}`;
   const modelPart = model ? `${model} / ${sections}` : '';
@@ -95,8 +96,27 @@ export function buildArticle(series, model, sections, connectionGroupId, connect
   } else {
     colorPart = `${colorCode} / RAL ${ralCode}`;
   }
+  const isRRV = series === 'RRV';
+  const num = String(connectionCode || '').replace(/^N/i, '').replace(/\D/g, '');
+  const position = isRRV
+    ? (['69', '98'].includes(num) ? '3' : '1')
+    : (['12', '14', '68'].includes(num) ? '3' : '1');
+  let ventValue;
+  if (ventType) {
+    if (isRRV && ['89', '69'].includes(num) && valveType === 'ТВН') {
+      ventValue = `1 / поз. 1 и 3 / ${ventConnSize}`;
+    } else {
+      ventValue = `1 / поз. ${position} / ${ventConnSize}`;
+    }
+  } else {
+    ventValue = `4 / поз. ${position} / ${ventConnSize}`;
+  }
   const parts = ['Kermi', series, modelPart, connStr, colorPart];
-  if (highPressure) parts.push('16');
+  parts.push(ventValue);
+  if (drainValve) {
+    parts.push(`4 / поз. ${position === '3' ? '4' : '2'} / ${connSize}`);
+  }
+  parts.push(highPressure ? '16' : '10');
   if (includeBracketKLK) parts.push('KLK');
   return parts.filter(Boolean).join(' - ');
 }
