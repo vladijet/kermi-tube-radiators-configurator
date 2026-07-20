@@ -392,6 +392,13 @@ export default function Configurator() {
 
       {/* Main */}
       <main className="flex-1 flex flex-col lg:overflow-hidden">
+        {!showResults && (
+          <header className="px-6 py-6 shrink-0">
+            <h1 className="text-center text-[18px] sm:text-[22px] lg:text-[26px] font-bold text-foreground">
+              Конфигуратор подбора трубчатых радиаторов KERMI
+            </h1>
+          </header>
+        )}
         {(showResults && !hasNoVariants) && (
           <header className="px-6 border-b border-border/50 shrink-0">
           <div className="flex flex-col gap-3 py-3 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:min-h-[68px] lg:py-0">
