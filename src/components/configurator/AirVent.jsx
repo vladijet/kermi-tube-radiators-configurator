@@ -72,18 +72,6 @@ export default function AirVent({ radiatorType, ventType, setVentType, ventConnS
 
       {isVent && sizeSelector}
 
-      {/* Крепление KLK в комплекте */}
-      <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-lg hover:bg-white/5 transition-all">
-        <input
-          type="checkbox"
-          checked={includeBracketKLK}
-          onChange={e => setIncludeBracketKLK(e.target.checked)}
-          className="w-4 h-4 rounded accent-primary"
-        />
-        <span className="text-[13px] font-semibold text-foreground flex-1">Крепление KLK в комплекте</span>
-        <span className="text-[11px] text-muted-foreground font-medium">+{formatEuro(0)}</span>
-      </label>
-
       {/* High pressure */}
       <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-lg hover:bg-white/5 transition-all">
         <input
@@ -94,6 +82,18 @@ export default function AirVent({ radiatorType, ventType, setVentType, ventConnS
         />
         <span className="text-[13px] font-semibold text-foreground flex-1">Повышенное давление 16 бар</span>
         <span className="text-[11px] text-muted-foreground font-medium">+{formatEuro(HIGH_PRESSURE_SURCHARGE)}</span>
+      </label>
+
+      {/* Крепление KLK в комплекте */}
+      <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-lg hover:bg-white/5 transition-all">
+        <input
+          type="checkbox"
+          checked={includeBracketKLK}
+          onChange={e => setIncludeBracketKLK(e.target.checked)}
+          className="w-4 h-4 rounded accent-primary"
+        />
+        <span className="text-[13px] font-semibold text-foreground flex-1">Крепление KLK в комплекте</span>
+        <span className="text-[11px] text-muted-foreground font-medium">+{formatEuro(0)}</span>
       </label>
     </div>
   );
