@@ -49,7 +49,7 @@ export default function AirVent({ radiatorType, ventType, setVentType, ventConnS
           onChange={() => setVentType(null)}
           className="w-4 h-4 accent-primary"
         />
-        <span className="text-[13px] font-semibold text-foreground flex-1">Футорка под воздухоотводчик (L)</span>
+        <span className="text-[13px] font-semibold text-foreground flex-1">Резьбовое под воздухоотводчик (L)</span>
         <span className="text-[11px] text-muted-foreground font-medium">+{formatEuro(0)}</span>
       </label>
 
