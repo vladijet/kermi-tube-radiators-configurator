@@ -369,16 +369,16 @@ export default function Configurator() {
                 connCode={connCode} setConnCode={setConnCode}
                 connSize={connSize} setConnSize={setConnSize}
               />
-              <SidebarFinish
-                ralCode={ralCode} setRalCode={setRalCode}
-                colorCode={colorCode} setColorCode={setColorCode}
-              />
               <AirVent
                 radiatorType={radiatorType}
                 ventType={ventType} setVentType={setVentType}
                 ventConnSize={ventConnSize} setVentConnSize={setVentConnSize}
                 includeBracketKLK={includeBracketKLK} setIncludeBracketKLK={setIncludeBracketKLK}
                 highPressure={highPressure} setHighPressure={setHighPressure}
+              />
+              <SidebarFinish
+                ralCode={ralCode} setRalCode={setRalCode}
+                colorCode={colorCode} setColorCode={setColorCode}
               />
             </>
           )}
