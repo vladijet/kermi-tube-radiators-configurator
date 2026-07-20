@@ -2,7 +2,7 @@ import React from 'react';
 import { VENT_TYPES, HIGH_PRESSURE_SURCHARGE, CONNECTION_SIZES } from '@/lib/radiatorData';
 import { formatEuro } from '@/lib/radiatorCalc';
 
-export default function AirVent({ radiatorType, ventType, setVentType, ventConnSize, setVentConnSize, includeBracketKLK, setIncludeBracketKLK, highPressure, setHighPressure }) {
+export default function AirVent({ radiatorType, ventType, setVentType, ventConnSize, setVentConnSize, includeBracketKLK, setIncludeBracketKLK, highPressure, setHighPressure, drainValve, setDrainValve }) {
   const isVent = ventType === '1';
   const isSchutz = !isVent;
   const vent = VENT_TYPES.find(v => v.code === '1');
@@ -71,6 +71,18 @@ export default function AirVent({ radiatorType, ventType, setVentType, ventConnS
       </label>
 
       {isVent && sizeSelector}
+
+      {/* Резьбовое под дренажный кран */}
+      <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-lg hover:bg-white/5 transition-all">
+        <input
+          type="checkbox"
+          checked={drainValve}
+          onChange={e => setDrainValve(e.target.checked)}
+          className="w-4 h-4 rounded accent-primary"
+        />
+        <span className="text-[13px] font-semibold text-foreground flex-1">Резьбовое под дренажный кран</span>
+        <span className="text-[11px] text-muted-foreground font-medium">+{formatEuro(0)}</span>
+      </label>
 
       {/* High pressure */}
       <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-lg hover:bg-white/5 transition-all">

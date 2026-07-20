@@ -39,6 +39,7 @@ export default function Configurator() {
   const [selected, setSelected] = useState(null);
   const [colorCode, setColorCode] = useState('AF');
   const [highPressure, setHighPressure] = useState(false);
+  const [drainValve, setDrainValve] = useState(false);
   const [ventType, setVentType] = useState(null);
   const [ventPosition, setVentPosition] = useState('-');
   const [connSize, setConnSize] = useState('12');
@@ -67,6 +68,7 @@ export default function Configurator() {
     setSelected(null);
     setColorCode('AF');
     setHighPressure(false);
+    setDrainValve(false);
     setVentType(null);
     setVentPosition('-');
     setConnSize('12');
@@ -375,6 +377,7 @@ export default function Configurator() {
                 ventConnSize={ventConnSize} setVentConnSize={setVentConnSize}
                 includeBracketKLK={includeBracketKLK} setIncludeBracketKLK={setIncludeBracketKLK}
                 highPressure={highPressure} setHighPressure={setHighPressure}
+                drainValve={drainValve} setDrainValve={setDrainValve}
               />
               <SidebarFinish
                 ralCode={ralCode} setRalCode={setRalCode}
@@ -435,6 +438,7 @@ export default function Configurator() {
             ventPosition={ventPosition}
             connSize={connSize}
             ventConnSize={ventConnSize}
+            drainValve={drainValve}
           />
           </header>
         )}
