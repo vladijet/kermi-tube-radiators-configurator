@@ -294,7 +294,7 @@ export default function Configurator() {
     return buildArticle(radiatorType, '', 0, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve);
   }, [selected, selectedSections, selectedTubes, results, radiatorType, connGroup, connCode, ralCode, colorCode, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve]);
 
-  const config = { colorCode, connGroup, connCode, highPressure, ventType, ventPosition, deltaT: deltaT.toFixed(1) };
+  const config = { radiatorType, colorCode, ralCode, connGroup, connCode, highPressure, ventType, ventPosition, connSize, ventConnSize, includeBracketKLK, drainValve, deltaT: deltaT.toFixed(1) };
 
   const previewSections = selected?.sections || selectedSections || 9;
   const previewHeight = height || 600;

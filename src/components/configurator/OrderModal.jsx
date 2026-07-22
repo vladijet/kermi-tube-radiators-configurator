@@ -3,9 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Check } from 'lucide-react';
+import { Check, FileSpreadsheet } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { formatEuro } from '@/lib/radiatorCalc';
+import { generateExcelOrder } from '@/lib/generateExcelOrder';
 
 export default function OrderModal({ open, onOpenChange, article, result, totalPrice, quantity, setQuantity, config }) {
   const [name, setName] = useState('');
@@ -14,6 +15,23 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadExcel = async () => {
+    setDownloading(true);
+    try {
+      await generateExcelOrder({
+        ...config,
+        model: result?.model,
+        sections: result?.sections,
+        quantity,
+      });
+    } catch (err) {
+      setError('Ошибка при скачивании бланка');
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,6 +128,15 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
                 <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" className="mt-1" />
               </div>
               {error && <p className="text-[12px] text-red-500 font-medium">{error}</p>}
+              <button
+                type="button"
+                onClick={handleDownloadExcel}
+                disabled={downloading}
+                className="flex items-center gap-2 text-[12px] font-bold text-primary hover:underline cursor-pointer transition-all"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                {downloading ? 'Подготовка...' : 'Скачать бланк заказа'}
+              </button>
             </div>
             <DialogFooter>
               <Button type="submit" disabled={submitting} className="w-full bg-[#685ef0] hover:bg-[#5848d4] text-white">
