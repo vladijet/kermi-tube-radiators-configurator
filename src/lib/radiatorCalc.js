@@ -109,7 +109,7 @@ export function buildArticle(series, model, sections, connectionGroupId, connect
   } else {
     ventValue = `4 / ${ventPos} / ${ventConnSize}`;
   }
-  const parts = ['Kermi', series, modelPart, connStr];
+  const parts = ['KERMI', series, modelPart, connStr];
   parts.push(ventValue);
   if (drainValve) {
     parts.push(`4 / ${position === '3' ? '4' : '2'} / ${connSize}`);
