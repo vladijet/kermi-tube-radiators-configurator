@@ -109,7 +109,8 @@ export function buildArticle(series, model, sections, connectionGroupId, connect
       ventValue = `1 / поз. ${position} / ${ventConnSize}`;
     }
   } else {
-    ventValue = `4 / поз. ${position} / ${ventConnSize}`;
+    const isDoubleVent = isRRV && ['89', '69'].includes(num) && valveType === 'ТВН';
+    ventValue = isDoubleVent ? `4 / поз. 1 и 3 / ${ventConnSize}` : `4 / поз. ${position} / ${ventConnSize}`;
   }
   const parts = ['Kermi', series, modelPart, connStr];
   parts.push(ventValue);

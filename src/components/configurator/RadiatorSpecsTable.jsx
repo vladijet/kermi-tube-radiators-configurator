@@ -43,7 +43,8 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
     ventSpec = { label: 'Воздухоотводчик (L)', value };
   } else {
     // Checkbox not selected — "Штуцер воздух" (code 4)
-    ventSpec = { label: 'Резьбовое под воздушник (L)', value: `4 / поз. ${position} / ${ventConnSize}` };
+    const isDoubleVent = isRRV && ['89', '69'].includes(num) && valveType === 'ТВН';
+    ventSpec = { label: 'Резьбовое под воздушник (L)', value: isDoubleVent ? `4 / поз. 1 и 3 / ${ventConnSize}` : `4 / поз. ${position} / ${ventConnSize}` };
   }
 
   const connDisplay = valveType ? `${connCode} ${valveType}` : connCode;
