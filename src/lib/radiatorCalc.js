@@ -101,21 +101,18 @@ export function buildArticle(series, model, sections, connectionGroupId, connect
   const position = isRRV
     ? (['69', '98'].includes(num) ? '3' : '1')
     : (['12', '14', '68'].includes(num) ? '3' : '1');
+  const isDoubleVent = isRRV && ['89', '69'].includes(num) && valveType === 'ТВН';
+  const ventPos = isDoubleVent ? '1_3' : position;
   let ventValue;
   if (ventType) {
-    if (isRRV && ['89', '69'].includes(num) && valveType === 'ТВН') {
-      ventValue = `1 / поз. 1 и 3 / ${ventConnSize}`;
-    } else {
-      ventValue = `1 / поз. ${position} / ${ventConnSize}`;
-    }
+    ventValue = `1 / ${ventPos} / ${ventConnSize}`;
   } else {
-    const isDoubleVent = isRRV && ['89', '69'].includes(num) && valveType === 'ТВН';
-    ventValue = isDoubleVent ? `4 / поз. 1 и 3 / ${ventConnSize}` : `4 / поз. ${position} / ${ventConnSize}`;
+    ventValue = `4 / ${ventPos} / ${ventConnSize}`;
   }
   const parts = ['Kermi', series, modelPart, connStr];
   parts.push(ventValue);
   if (drainValve) {
-    parts.push(`4 / поз. ${position === '3' ? '4' : '2'} / ${connSize}`);
+    parts.push(`4 / ${position === '3' ? '4' : '2'} / ${connSize}`);
   }
   parts.push(highPressure ? '16' : '10');
   if (includeBracketKLK) parts.push('KLK');
