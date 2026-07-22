@@ -135,7 +135,7 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
                 className="flex items-center gap-2 text-[12px] font-bold text-primary hover:underline cursor-pointer transition-all"
               >
                 <FileSpreadsheet className="w-4 h-4" />
-                {downloading ? 'Подготовка...' : 'Скачать бланк заказа'}
+                {downloading ? 'Подготовка...' : 'Скачать заполненный бланк заказа поставщику'}
               </button>
             </div>
             <DialogFooter>

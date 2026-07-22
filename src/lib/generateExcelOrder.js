@@ -70,5 +70,8 @@ export async function generateExcelOrder(config) {
 
   XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: 'A10' });
 
-  XLSX.writeFile(workbook, 'Бланк_заказа_KERMI.xlsx');
+  const uniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const fileName = `Заказ радиатора Kermi _${uniqueId}_${dateStr}.xlsx`;
+  XLSX.writeFile(workbook, fileName);
 }
