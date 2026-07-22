@@ -4,27 +4,27 @@ import { findConnectionVariant } from './radiatorData';
 // Header definition: [column, groupLabel, subLabel]
 // groupLabel = null means single-level column (merge rows 1-2)
 const HEADER = [
-  { col: 'A', group: 'Pos.\nПоз.', sub: null },
-  { col: 'B', group: 'Raum\nПомещение', sub: null },
-  { col: 'C', group: 'Anzahl\nКоличество', sub: null },
-  { col: 'D', group: 'Artikel/Modell\nАртикул/модель', sub: null },
-  { col: 'E', group: 'Baulänge in Glieder\nмонтажная длина в элем.', sub: null },
-  { col: 'F', group: 'Vor-/ Rücklauf\nПодающий/ обратный трубопровод', sub: 'Anschlusstechnik\nВиды подключения' },
-  { col: 'G', group: null, sub: 'Anordnung\nРасположение' },
-  { col: 'H', group: null, sub: 'Anschlussgröße\nДиаметр подключения' },
-  { col: 'I', group: 'Entlüftung\nМикровоздушник', sub: 'Ausführung\nИсполнение' },
-  { col: 'J', group: null, sub: 'Anordnung\nРасположение' },
-  { col: 'K', group: null, sub: 'Anschlussgröße\nДиаметр подключения' },
-  { col: 'L', group: 'Entleerung\nОпорожнение', sub: 'Ausführung\nИсполнение' },
-  { col: 'M', group: null, sub: 'Anordnung\nРасположение' },
-  { col: 'N', group: null, sub: 'Anschlussgröße\nДиаметр подключения' },
-  { col: 'O', group: 'Druckausführung\nРабочее давление', sub: null },
-  { col: 'P', group: 'Einbauten\nАрматура', sub: null },
-  { col: 'Q', group: 'Befestigung\nКрепление', sub: null },
-  { col: 'R', group: 'Oberfläche\nПоверхность', sub: 'Behandlung\nОбработка' },
-  { col: 'S', group: null, sub: 'Farbton\nЦвет/ Номер цвета' },
-  { col: 'T', group: null, sub: 'Montage\nМонтаж' },
-  { col: 'U', group: 'Sonderausführung\nспециальное исполнение', sub: null },
+  { col: 'A', group: 'Поз.', sub: null },
+  { col: 'B', group: 'Помещение', sub: null },
+  { col: 'C', group: 'Количество', sub: null },
+  { col: 'D', group: 'Модель', sub: null },
+  { col: 'E', group: 'Монтажная длина в элементах/секциях', sub: null },
+  { col: 'F', group: 'Подающий/ обратный трубопровод', sub: 'Виды подключения' },
+  { col: 'G', group: null, sub: 'Расположение' },
+  { col: 'H', group: null, sub: 'Диаметр подключения' },
+  { col: 'I', group: 'Микровоздушник', sub: 'Исполнение' },
+  { col: 'J', group: null, sub: 'Расположение' },
+  { col: 'K', group: null, sub: 'Диаметр подключения' },
+  { col: 'L', group: 'Опорожнение', sub: 'Исполнение' },
+  { col: 'M', group: null, sub: 'Расположение' },
+  { col: 'N', group: null, sub: 'Диаметр подключения' },
+  { col: 'O', group: 'Рабочее давление', sub: null },
+  { col: 'P', group: 'Арматура', sub: null },
+  { col: 'Q', group: 'Крепление', sub: null },
+  { col: 'R', group: 'Поверхность', sub: 'Обработка' },
+  { col: 'S', group: null, sub: 'Цвет/ Номер цвета' },
+  { col: 'T', group: null, sub: 'Монтаж' },
+  { col: 'U', group: 'Специальное исполнение', sub: null },
 ];
 
 function colToIndex(col) {
@@ -134,12 +134,13 @@ export async function generateExcelOrder(config) {
 
   const pressure = config.highPressure ? '16' : '10';
   const fastening = config.includeBracketKLK ? 'KLK' : '';
+  const articleValue = config.radiatorType === 'RRV' ? `${config.model}V` : config.model;
 
   const rowData = [
-    1,                    // A: Pos
-    '',                   // B: Raum
-    config.quantity,      // C: Anzahl
-    config.model,         // D: Artikel/Modell
+    1,                    // A: Поз.
+    '',                   // B: Помещение
+    config.quantity,      // C: Количество
+    articleValue,         // D: Модель
     config.sections,      // E: Baulänge
     connPrefix,           // F: Anschlusstechnik
     connNum,              // G: Anordnung
