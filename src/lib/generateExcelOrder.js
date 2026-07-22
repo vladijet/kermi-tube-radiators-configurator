@@ -15,7 +15,7 @@ const HEADER = [
   { col: 'I', group: 'Микровоздушник', sub: 'Исполнение' },
   { col: 'J', group: null, sub: 'Расположение' },
   { col: 'K', group: null, sub: 'Диаметр подключения' },
-  { col: 'L', group: 'Опорожнение', sub: 'Исполнение' },
+  { col: 'L', group: 'Опорожнение/Дренаж', sub: 'Исполнение' },
   { col: 'M', group: null, sub: 'Расположение' },
   { col: 'N', group: null, sub: 'Диаметр подключения' },
   { col: 'O', group: 'Рабочее давление', sub: null },
@@ -117,9 +117,9 @@ export async function generateExcelOrder(config) {
 
   const connPrefix = isRRV ? '31' : '2';
 
-  const drainExec = config.drainValve ? '4' : '0';
-  const drainPos = config.drainValve ? (position === '3' ? '4' : '2') : '0';
-  const drainSize = config.drainValve ? config.connSize : '0';
+  const drainExec = config.drainValve ? '4' : '';
+  const drainPos = config.drainValve ? (position === '3' ? '4' : '2') : '';
+  const drainSize = config.drainValve ? config.connSize : '';
 
   const NO_RAL_CODES = ['TF', 'ZN'];
   const WHITE_RAL_CODES = ['SL', 'ZL'];
