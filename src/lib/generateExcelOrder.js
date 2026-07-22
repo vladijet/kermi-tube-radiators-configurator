@@ -1,15 +1,106 @@
 import * as XLSX from 'xlsx';
 import { findConnectionVariant } from './radiatorData';
 
-const TEMPLATE_URL = 'https://media.base44.com/files/public/6a5dc0cf6f2847b3a26da201/e33a57af3_base.xlsx';
+// Header definition: [column, groupLabel, subLabel]
+// groupLabel = null means single-level column (merge rows 1-2)
+const HEADER = [
+  { col: 'A', group: 'Pos.\nПоз.', sub: null },
+  { col: 'B', group: 'Raum\nПомещение', sub: null },
+  { col: 'C', group: 'Anzahl\nКоличество', sub: null },
+  { col: 'D', group: 'Artikel/Modell\nАртикул/модель', sub: null },
+  { col: 'E', group: 'Baulänge in Glieder\nмонтажная длина в элем.', sub: null },
+  { col: 'F', group: 'Vor-/ Rücklauf\nПодающий/ обратный трубопровод', sub: 'Anschlusstechnik\nВиды подключения' },
+  { col: 'G', group: null, sub: 'Anordnung\nРасположение' },
+  { col: 'H', group: null, sub: 'Anschlussgröße\nДиаметр подключения' },
+  { col: 'I', group: 'Entlüftung\nМикровоздушник', sub: 'Ausführung\nИсполнение' },
+  { col: 'J', group: null, sub: 'Anordnung\nРасположение' },
+  { col: 'K', group: null, sub: 'Anschlussgröße\nДиаметр подключения' },
+  { col: 'L', group: 'Entleerung\nОпорожнение', sub: 'Ausführung\nИсполнение' },
+  { col: 'M', group: null, sub: 'Anordnung\nРасположение' },
+  { col: 'N', group: null, sub: 'Anschlussgröße\nДиаметр подключения' },
+  { col: 'O', group: 'Druckausführung\nРабочее давление', sub: null },
+  { col: 'P', group: 'Einbauten\nАрматура', sub: null },
+  { col: 'Q', group: 'Befestigung\nКрепление', sub: null },
+  { col: 'R', group: 'Oberfläche\nПоверхность', sub: 'Behandlung\nОбработка' },
+  { col: 'S', group: null, sub: 'Farbton\nЦвет/ Номер цвета' },
+  { col: 'T', group: null, sub: 'Montage\nМонтаж' },
+  { col: 'U', group: 'Sonderausführung\nспециальное исполнение', sub: null },
+];
+
+function colToIndex(col) {
+  let idx = 0;
+  for (let i = 0; i < col.length; i++) {
+    idx = idx * 26 + (col.charCodeAt(i) - 64);
+  }
+  return idx - 1; // 0-based
+}
 
 export async function generateExcelOrder(config) {
-  const response = await fetch(TEMPLATE_URL);
-  const buffer = await response.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: 'array' });
-  const sheetName = workbook.SheetNames[0];
-  const ws = workbook.Sheets[sheetName];
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([[], []]); // two empty header rows
 
+  // Write header values
+  HEADER.forEach(h => {
+    const colIdx = colToIndex(h.col);
+    if (h.group) {
+      // Group header in row 0
+      const cellRef = XLSX.utils.encode_cell({ r: 0, c: colIdx });
+      ws[cellRef] = { t: 's', v: h.group };
+    }
+    if (h.sub) {
+      // Sub header in row 1
+      const cellRef = XLSX.utils.encode_cell({ r: 1, c: colIdx });
+      ws[cellRef] = { t: 's', v: h.sub };
+    }
+  });
+
+  // Build merges
+  const merges = [];
+  let i = 0;
+  while (i < HEADER.length) {
+    const h = HEADER[i];
+    if (h.sub === null && h.group) {
+      // Single-level: merge rows 0-1
+      merges.push({ s: { r: 0, c: i }, e: { r: 1, c: i } });
+      i++;
+    } else if (h.group) {
+      // Group with sub-columns: find span
+      let j = i + 1;
+      while (j < HEADER.length && HEADER[j].group === null) j++;
+      merges.push({ s: { r: 0, c: i }, e: { r: 0, c: j - 1 } });
+      i = j;
+    } else {
+      i++;
+    }
+  }
+  ws['!merges'] = merges;
+
+  // Column widths
+  ws['!cols'] = [
+    { wch: 5 },   // A Pos
+    { wch: 10 },  // B Raum
+    { wch: 8 },   // C Anzahl
+    { wch: 16 },  // D Artikel
+    { wch: 10 },  // E Baulänge
+    { wch: 12 },  // F
+    { wch: 10 },  // G
+    { wch: 10 },  // H
+    { wch: 10 },  // I
+    { wch: 10 },  // J
+    { wch: 10 },  // K
+    { wch: 10 },  // L
+    { wch: 10 },  // M
+    { wch: 10 },  // N
+    { wch: 10 },  // O
+    { wch: 10 },  // P
+    { wch: 8 },   // Q
+    { wch: 10 },  // R
+    { wch: 14 },  // S
+    { wch: 8 },   // T
+    { wch: 12 },  // U
+  ];
+
+  // --- Build data row (row index 2 = row 3 in Excel) ---
   const variant = findConnectionVariant(config.connGroup, config.connCode);
   const valveType = variant?.valveType || '';
   const connNum = String(config.connCode || '').replace(/^N/i, '').replace(/\D/g, '');
@@ -21,8 +112,8 @@ export async function generateExcelOrder(config) {
     : (['12', '14', '68'].includes(connNum) ? '3' : '1');
 
   const ventExec = config.ventType ? '1' : '4';
-  const ventExecValue = isDoubleVent ? `${ventExec}_3` : ventExec;
-  const ventPosValue = isDoubleVent ? '1_3' : position;
+  const ventExecValue = isDoubleVent ? `${ventExec} / 3` : ventExec;
+  const ventPosValue = isDoubleVent ? `1 / 3` : position;
 
   const connPrefix = isRRV ? '31' : '2';
 
@@ -46,7 +137,7 @@ export async function generateExcelOrder(config) {
 
   const rowData = [
     1,                    // A: Pos
-    1,                    // B: Raum
+    '',                   // B: Raum
     config.quantity,      // C: Anzahl
     config.model,         // D: Artikel/Modell
     config.sections,      // E: Baulänge
@@ -62,16 +153,18 @@ export async function generateExcelOrder(config) {
     pressure,             // O: Druckausführung
     '',                   // P: Einbauten
     fastening,            // Q: Befestigung
-    '',                   // R: Behandlung
+    config.colorCode,     // R: Behandlung
     colorStr,             // S: Farbton
     '',                   // T: Montage
     '',                   // U: Sonderausführung
   ];
 
-  XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: 'A10' });
+  XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: 2 });
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Bestellung');
 
   const uniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
   const dateStr = new Date().toISOString().slice(0, 10);
   const fileName = `Заказ радиатора Kermi _${uniqueId}_${dateStr}.xlsx`;
-  XLSX.writeFile(workbook, fileName);
+  XLSX.writeFile(wb, fileName);
 }
