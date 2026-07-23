@@ -4,7 +4,10 @@ import PartnerTable from '@/components/admin/PartnerTable';
 import PartnerForm from '@/components/admin/PartnerForm';
 import WidgetStats from '@/components/admin/WidgetStats';
 import WidgetCodeModal from '@/components/admin/WidgetCodeModal';
-import { Plus, Loader2, LayoutDashboard, LogOut } from 'lucide-react';
+import { Plus, Loader2, LayoutDashboard, LogOut, Users } from 'lucide-react';
+import { useAuth } from '@/lib/AuthContext';
+import UserManagement from '@/components/admin/UserManagement';
+import { SUPERADMIN_ID } from '@/lib/superadmin';
 
 export default function Admin() {
   const [partners, setPartners] = useState([]);
@@ -13,6 +16,9 @@ export default function Admin() {
   const [editingPartner, setEditingPartner] = useState(null);
   const [statsPartner, setStatsPartner] = useState(null);
   const [codePartner, setCodePartner] = useState(null);
+  const { user } = useAuth();
+  const [tab, setTab] = useState('partners');
+  const isSuperadmin = user?.id === SUPERADMIN_ID;
 
   const loadPartners = useCallback(async () => {
     setLoading(true);
@@ -77,7 +83,33 @@ export default function Admin() {
         </div>
       </header>
 
+      {isSuperadmin && (
+        <div className="border-b border-border/30 px-6 flex gap-1">
+          <button
+            onClick={() => setTab('partners')}
+            className={`px-4 py-2.5 text-[13px] font-semibold border-b-2 transition-all ${
+              tab === 'partners' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Партнёры
+          </button>
+          <button
+            onClick={() => setTab('users')}
+            className={`flex items-center gap-1.5 px-4 py-2.5 text-[13px] font-semibold border-b-2 transition-all ${
+              tab === 'users' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            Пользователи
+          </button>
+        </div>
+      )}
+
       <main className="max-w-[1200px] mx-auto px-6 py-6">
+        {tab === 'users' && isSuperadmin ? (
+          <UserManagement />
+        ) : (
+        <>
         <div className="flex items-center justify-between mb-5">
           <div className="text-[13px] text-muted-foreground">
             {partners.length} партнёр(ов) всего
@@ -110,6 +142,8 @@ export default function Admin() {
               onDelete={handleDelete}
             />
           </div>
+        )}
+        </>
         )}
       </main>
 
