@@ -14,6 +14,7 @@ import { AVAILABLE_HEIGHTS, CAMBIOTHERM_HEIGHTS, SECTION_LENGTH, MAX_SECTIONS, g
 import { getMaxSections, getBracketCount } from '@/lib/modelLimits';
 import { getRalColor } from '@/lib/ralColors';
 import { SlidersHorizontal, Copy, Check } from 'lucide-react';
+import { loadPartner, applyPartnerTheme, trackWidgetEvent, EVENT_TYPES, getWidgetIdFromUrl } from '@/lib/widgetTracking';
 
 export default function Configurator() {
   // Model & connection
@@ -50,6 +51,16 @@ export default function Configurator() {
   const [quantity, setQuantity] = useState(1);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Widget partner: load theme + track open
+  useEffect(() => {
+    const widgetId = getWidgetIdFromUrl();
+    if (!widgetId) return;
+    loadPartner(widgetId).then((partner) => {
+      if (partner) applyPartnerTheme(partner);
+    });
+    trackWidgetEvent(EVENT_TYPES.OPEN);
+  }, []);
 
   const handleReset = () => {
     setRadiatorType('RRN');
@@ -303,6 +314,7 @@ export default function Configurator() {
 
   const handleFind = () => {
     setShowResults(true);
+    trackWidgetEvent(EVENT_TYPES.CALCULATION);
   };
 
   return (
@@ -422,7 +434,7 @@ export default function Configurator() {
                   <div className="text-[16px] font-bold text-foreground">{formatEuro(totalPrice)}</div>
                 </div>
                 <button
-                  onClick={() => setShowOrderModal(true)}
+                  onClick={() => { setShowOrderModal(true); trackWidgetEvent(EVENT_TYPES.ORDER_ADDED); }}
                   className="w-full lg:w-auto px-5 py-2.5 rounded-premium bg-[#685ef0] text-white text-[13px] font-bold hover:bg-[#5848d4] transition-all"
                 >
                   Добавить в заказ

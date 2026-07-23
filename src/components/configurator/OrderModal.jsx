@@ -7,6 +7,7 @@ import { Check, FileSpreadsheet } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { formatEuro } from '@/lib/radiatorCalc';
 import { generateExcelOrder } from '@/lib/generateExcelOrder';
+import { trackWidgetEvent, EVENT_TYPES } from '@/lib/widgetTracking';
 
 export default function OrderModal({ open, onOpenChange, article, result, totalPrice, quantity, setQuantity, config }) {
   const [name, setName] = useState('');
@@ -26,6 +27,7 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
         sections: result?.sections,
         quantity,
       });
+      trackWidgetEvent(EVENT_TYPES.EXCEL_DOWNLOAD);
     } catch (err) {
       setError('Ошибка при скачивании бланка');
     } finally {
@@ -54,6 +56,7 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
         status: 'new',
       });
       setSubmitted(true);
+      trackWidgetEvent(EVENT_TYPES.APPLICATION_SENT);
     } catch (err) {
       setError(err.message || 'Ошибка при отправке заявки');
     } finally {

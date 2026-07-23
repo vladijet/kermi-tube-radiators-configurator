@@ -1,0 +1,48 @@
+{
+  "name": "WidgetEvent",
+  "type": "object",
+  "properties": {
+    "partner_id": {
+      "type": "string",
+      "title": "ID \u043f\u0430\u0440\u0442\u043d\u0451\u0440\u0430"
+    },
+    "widget_id": {
+      "type": "string",
+      "title": "ID \u0432\u0438\u0434\u0436\u0435\u0442\u0430"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "open",
+        "calculation",
+        "order_added",
+        "application_sent",
+        "excel_download"
+      ],
+      "title": "\u0422\u0438\u043f \u0441\u043e\u0431\u044b\u0442\u0438\u044f"
+    }
+  },
+  "required": [
+    "partner_id",
+    "widget_id",
+    "event_type"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
