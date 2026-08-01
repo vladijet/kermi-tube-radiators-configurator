@@ -479,8 +479,12 @@ export default function Configurator() {
 
       <a
         href="https://teplocalc.ru"
-        target="_top"
+        target="_blank"
         rel="noopener noreferrer"
+        onClick={(e) => {
+          e.preventDefault();
+          window.open('https://teplocalc.ru', '_blank', 'noopener,noreferrer');
+        }}
         className="fixed bottom-4 right-6 z-[9999] bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border/50 text-[11px] text-muted-foreground hover:text-primary hover:border-primary transition-all cursor-pointer pointer-events-auto"
       >
         Создано в <span className="font-semibold underline underline-offset-4">Teplocalc.ru</span>
