@@ -474,22 +474,17 @@ export default function Configurator() {
             />
           </div>
 
-          <div className="flex justify-end px-6 py-3 shrink-0 bg-background relative z-30">
-            <a
-              href="https://teplocalc.ru"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                e.preventDefault();
-                window.open('https://teplocalc.ru', '_blank', 'noopener,noreferrer');
-              }}
-              className="text-[11px] text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-            >
-              Создано в <span className="font-semibold underline underline-offset-4">Teplocalc.ru</span>
-            </a>
-          </div>
         </div>
       </main>
+
+      <a
+        href="https://teplocalc.ru"
+        target="_top"
+        rel="noopener noreferrer"
+        className="fixed bottom-4 right-6 z-[9999] bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border/50 text-[11px] text-muted-foreground hover:text-primary hover:border-primary transition-all cursor-pointer pointer-events-auto"
+      >
+        Создано в <span className="font-semibold underline underline-offset-4">Teplocalc.ru</span>
+      </a>
 
       <ResetConfirmDialog
         open={showReset}
