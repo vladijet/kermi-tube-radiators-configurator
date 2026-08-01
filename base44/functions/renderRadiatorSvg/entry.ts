@@ -8,6 +8,17 @@ function hexToRgb(hex) {
   const n = parseInt(h, 16);
   return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
 }
+// Strict validation + normalization of a color input for safe embedding into SVG markup.
+// Accepts optional leading '#' followed by 3 or 6 hex digits; anything else falls back to default.
+const DEFAULT_COLOR = '#F4F4F4';
+function safeColor(input) {
+  const h = String(input || '').trim();
+  const m = h.match(/^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/);
+  if (!m) return DEFAULT_COLOR;
+  let hex = m[1];
+  if (hex.length === 3) hex = hex.split('').map((c) => c + c).join('');
+  return '#' + hex.toLowerCase();
+}
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function rgbToHex(r, g, b) {
   return '#' + [r, g, b].map((v) => clamp(Math.round(v), 0, 255).toString(16).padStart(2, '0')).join('');
@@ -317,7 +328,7 @@ Deno.serve(async (req) => {
     const sections = clamp(parseInt(params.sections, 10) || 9, 2, 60);
     const H = Math.max(180, parseInt(params.height, 10) || 600);
     const connectionCode = String(params.connectionCode || 'N12').replace(/^N/i, '');
-    const color = String(params.color || '#F4F4F4');
+    const color = safeColor(params.color);
     const valveType = String(params.valveType || '');
     const ventSide = String(params.ventSide || '');
     const ventType = String(params.ventType || '');
