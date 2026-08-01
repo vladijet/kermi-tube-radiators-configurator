@@ -472,12 +472,12 @@ export default function Configurator() {
             drainValve={drainValve}
           />
 
-          <div className="flex justify-end px-6 pb-4">
+          <div className="flex justify-end px-6 pb-4 relative z-20 pointer-events-none">
             <a
               href="https://teplocalc.ru"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] text-muted-foreground hover:text-primary transition-colors"
+              className="pointer-events-auto text-[11px] text-muted-foreground hover:text-primary transition-colors"
             >
               Создано в <span className="font-semibold underline underline-offset-4">Teplocalc.ru</span>
             </a>
