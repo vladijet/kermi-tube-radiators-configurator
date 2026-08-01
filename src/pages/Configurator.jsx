@@ -461,23 +461,25 @@ export default function Configurator() {
           />
           </header>
         )}
-        <div className="flex-1 lg:overflow-y-auto bg-background">
-          <RadiatorServerPreview
-            sections={previewSections}
-            height={previewHeight}
-            connectionCode={previewConn}
-            valveType={previewValveType}
-            color={previewColor}
-            ventType={ventType}
-            drainValve={drainValve}
-          />
+        <div className="flex-1 flex flex-col min-h-0 bg-background">
+          <div className="flex-1 min-h-0 lg:overflow-y-auto">
+            <RadiatorServerPreview
+              sections={previewSections}
+              height={previewHeight}
+              connectionCode={previewConn}
+              valveType={previewValveType}
+              color={previewColor}
+              ventType={ventType}
+              drainValve={drainValve}
+            />
+          </div>
 
-          <div className="flex justify-end px-6 pb-4 relative z-20 pointer-events-none">
+          <div className="flex justify-end px-6 py-3 shrink-0 bg-background relative z-30">
             <a
               href="https://teplocalc.ru"
               target="_blank"
               rel="noopener noreferrer"
-              className="pointer-events-auto text-[11px] text-muted-foreground hover:text-primary transition-colors"
+              className="text-[11px] text-muted-foreground hover:text-primary transition-colors"
             >
               Создано в <span className="font-semibold underline underline-offset-4">Teplocalc.ru</span>
             </a>
