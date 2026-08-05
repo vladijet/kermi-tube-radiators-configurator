@@ -295,12 +295,12 @@ export default function Configurator() {
     : 0;
   const article = useMemo(() => {
     if (selected) {
-      return buildArticle(radiatorType, selected.model, selected.sections, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve);
+      return buildArticle(radiatorType, selected.model, selected.sections, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve, selected.height);
     }
     if (selectedSections && results.length > 0) {
       const match = selectedTubes ? results.find(r => r.tubes === selectedTubes) : null;
       const r = match || results[0];
-      return buildArticle(radiatorType, r.model, r.sections, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve);
+      return buildArticle(radiatorType, r.model, r.sections, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve, r.height);
     }
     return buildArticle(radiatorType, '', 0, connGroup, connCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve);
   }, [selected, selectedSections, selectedTubes, results, radiatorType, connGroup, connCode, ralCode, colorCode, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve]);

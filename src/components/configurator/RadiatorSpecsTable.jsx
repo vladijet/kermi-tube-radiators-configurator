@@ -74,7 +74,8 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
     ventSpec,
     ...(drainValve ? [{ label: 'Резьбовое под дренаж (Е)', value: `4 / поз. ${position === '3' ? '4' : '2'} / ${connSize}` }] : []),
     { label: 'Давление', value: highPressure ? '16 бар' : '10 бар' },
-    { label: 'Крепления', value: selected.bracketCount ? `KLK - ${selected.bracketCount} шт` : '—' },
+    // Крепления KLK не отображаются для радиаторов высотой < 300 мм и секций < 6
+    ...((selected.height >= 300 || selected.sections >= 6) ? [{ label: 'Крепления', value: selected.bracketCount ? `KLK - ${selected.bracketCount} шт` : '—' }] : []),
     { label: 'Цвет', value: colorLabel },
     { label: 'Q ном ΔT60', value: `${selected.qNomTotal} Вт` },
     { label: `Q расч ΔT${deltaT.toFixed(0)}`, value: `${selected.qRealTotal} Вт`, isPrimary: true },

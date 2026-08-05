@@ -79,7 +79,7 @@ export function calculateTotalPrice(basePrice, colorCode, connectionGroupId, con
   return Math.round((basePrice + colorMarkup + connSurcharge + pressureMarkup + ventMarkup) * 100) / 100;
 }
 
-export function buildArticle(series, model, sections, connectionGroupId, connectionCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve) {
+export function buildArticle(series, model, sections, connectionGroupId, connectionCode, ralCode, colorCode, highPressure, ventType, ventPosition, connSize, includeBracketKLK, ventConnSize, drainValve, height) {
   const variant = findConnectionVariant(connectionGroupId, connectionCode);
   const valveType = variant?.valveType || '';
   const connDisplay = valveType ? `${connectionCode} ${valveType}` : (connectionCode || '');
@@ -115,7 +115,9 @@ export function buildArticle(series, model, sections, connectionGroupId, connect
     parts.push(`4 / ${position === '3' ? '4' : '2'} / ${connSize}`);
   }
   parts.push(highPressure ? '16' : '10');
-  if (includeBracketKLK) parts.push('KLK');
+  // Крепления KLK не поставляются для радиаторов высотой < 300 мм и секций < 6
+  const klkEligible = Number(height) >= 300 || Number(sections) >= 6;
+  if (includeBracketKLK && klkEligible) parts.push('KLK');
   parts.push(colorPart);
   return parts.filter(Boolean).join(' - ');
 }
