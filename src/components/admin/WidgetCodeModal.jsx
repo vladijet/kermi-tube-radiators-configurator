@@ -8,7 +8,7 @@ export default function WidgetCodeModal({ open, onOpenChange, partner }) {
 
   if (!partner) return null;
 
-  const widgetUrl = `${window.location.origin}/?widget=${partner.widget_id}`;
+  const widgetUrl = `https://rr.kermi-configurator.com/?widget=${partner.widget_id}`;
   const embedCode = `<iframe
   src="${widgetUrl}"
   width="100%"
