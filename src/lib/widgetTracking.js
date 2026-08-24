@@ -2,10 +2,22 @@ import { base44 } from '@/api/base44Client';
 
 let cachedPartner = null;
 let fetchPromise = null;
+let cachedSitePartner = null;
+let siteFetchPromise = null;
 
 export function getWidgetIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
   return params.get('widget') || '';
+}
+
+function getUtmParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    referrer: document.referrer || '',
+    utm_source: params.get('utm_source') || '',
+    utm_medium: params.get('utm_medium') || '',
+    utm_campaign: params.get('utm_campaign') || '',
+  };
 }
 
 export async function loadPartner(widgetId) {
@@ -29,6 +41,26 @@ export async function loadPartner(widgetId) {
   return fetchPromise;
 }
 
+async function loadSitePartner() {
+  if (cachedSitePartner !== null) return cachedSitePartner;
+  if (siteFetchPromise) return siteFetchPromise;
+
+  siteFetchPromise = base44.entities.Partner.filter({ is_site: true })
+    .then((res) => {
+      cachedSitePartner = res && res[0] ? res[0] : null;
+      return cachedSitePartner;
+    })
+    .catch(() => {
+      cachedSitePartner = null;
+      return null;
+    })
+    .finally(() => {
+      siteFetchPromise = null;
+    });
+
+  return siteFetchPromise;
+}
+
 export function applyPartnerTheme(partner) {
   if (!partner?.widget_config) return;
   const root = document.documentElement;
@@ -49,16 +81,27 @@ export function applyPartnerTheme(partner) {
 
 export async function trackWidgetEvent(eventType) {
   const widgetId = getWidgetIdFromUrl();
-  if (!widgetId) return;
-  const partner = await loadPartner(widgetId);
-  if (!partner) return;
-  if (partner.analytics_enabled === false) return;
+  const utm = getUtmParams();
 
   try {
+    let partner;
+    let source;
+    if (widgetId) {
+      partner = await loadPartner(widgetId);
+      source = 'widget';
+    } else {
+      partner = await loadSitePartner();
+      source = 'site';
+    }
+    if (!partner) return;
+    if (partner.analytics_enabled === false) return;
+
     await base44.entities.WidgetEvent.create({
       partner_id: partner.id,
-      widget_id: widgetId,
+      widget_id: widgetId || '',
       event_type: eventType,
+      source,
+      ...utm,
     });
   } catch (e) {
     // silent fail — tracking should never block UX
