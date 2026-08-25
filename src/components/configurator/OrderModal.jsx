@@ -36,6 +36,11 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [downloading, setDownloading] = useState(false);
+  const [consentPersonal, setConsentPersonal] = useState(false);
+  const [consentMarketing, setConsentMarketing] = useState(false);
+
+  // TODO: подставить реальный URL PDF политики обработки персональных данных, когда пользователь пришлёт файл
+  const PRIVACY_POLICY_URL = '#';
 
   const handleDownloadExcel = async () => {
     setDownloading(true);
@@ -58,6 +63,10 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
     e.preventDefault();
     if (!name.trim() || phoneDigitsCount(phone) < 10) {
       setError('Заполните имя и корректный телефон');
+      return;
+    }
+    if (!consentPersonal) {
+      setError('Необходимо согласие на обработку персональных данных');
       return;
     }
     setSubmitting(true);
@@ -87,6 +96,7 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
     if (submitted) {
       setSubmitted(false);
       setName(''); setPhone(''); setEmail('');
+      setConsentPersonal(false); setConsentMarketing(false);
     }
     setError('');
     onOpenChange(false);
@@ -154,6 +164,38 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
               <div>
                 <Label className="text-[12px] font-semibold text-muted-foreground">Ваш емайл</Label>
                 <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" className="mt-1" />
+              </div>
+              <div className="space-y-2.5">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={consentPersonal}
+                    onChange={(e) => setConsentPersonal(e.target.checked)}
+                    className="mt-0.5 w-[14px] h-[14px] rounded border-border accent-primary cursor-pointer shrink-0"
+                  />
+                  <span className="text-[12px] text-muted-foreground leading-snug">
+                    Я согласен с{' '}
+                    <a
+                      href={PRIVACY_POLICY_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2 hover:text-primary/80"
+                    >
+                      политикой обработки персональных данных
+                    </a>
+                  </span>
+                </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={consentMarketing}
+                    onChange={(e) => setConsentMarketing(e.target.checked)}
+                    className="mt-0.5 w-[14px] h-[14px] rounded border-border accent-primary cursor-pointer shrink-0"
+                  />
+                  <span className="text-[12px] text-muted-foreground leading-snug">
+                    Я согласен на получение рекламных материалов, новостей и специальных предложений.
+                  </span>
+                </label>
               </div>
               {error && <p className="text-[12px] text-red-500 font-medium">{error}</p>}
               <button
