@@ -5,6 +5,7 @@ import PartnerForm from '@/components/admin/PartnerForm';
 import WidgetStats from '@/components/admin/WidgetStats';
 import WidgetCodeModal from '@/components/admin/WidgetCodeModal';
 import SiteStats from '@/components/admin/SiteStats';
+import Settings from '@/components/admin/Settings';
 import { Plus, Loader2, LayoutDashboard, LogOut, Users, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import UserManagement from '@/components/admin/UserManagement';
@@ -105,6 +106,14 @@ export default function Admin() {
           <BarChart3 className="w-3.5 h-3.5" />
           Статистика по сайту
         </button>
+        <button
+          onClick={() => setTab('settings')}
+          className={`px-4 py-2.5 text-[13px] font-semibold border-b-2 transition-all ${
+            tab === 'settings' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          Настройки
+        </button>
         {isSuperadmin && (
           <button
             onClick={() => setTab('users')}
@@ -123,6 +132,8 @@ export default function Admin() {
           <UserManagement />
         ) : tab === 'site' ? (
           <SiteStats partner={sitePartner} />
+        ) : tab === 'settings' ? (
+          <Settings />
         ) : (
         <>
         <div className="flex items-center justify-between mb-5">
