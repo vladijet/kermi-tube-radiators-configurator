@@ -9,9 +9,28 @@ import { formatEuro } from '@/lib/radiatorCalc';
 import { generateExcelOrder } from '@/lib/generateExcelOrder';
 import { trackWidgetEvent, EVENT_TYPES } from '@/lib/widgetTracking';
 
+function formatPhone(raw) {
+  let digits = (raw || '').replace(/\D/g, '');
+  // Нормализуем: убираем ведущую 7/8, оставляем только значащие цифры после кода страны
+  if (digits.startsWith('8')) digits = digits.slice(1);
+  if (digits.startsWith('7')) digits = digits.slice(1);
+  digits = digits.slice(0, 10); // максимум 10 цифр после +7
+  let out = '+7';
+  if (digits.length > 0) out += ' ' + digits.slice(0, 3);
+  if (digits.length > 3) out += ' ' + digits.slice(3, 6);
+  if (digits.length > 6) out += ' ' + digits.slice(6, 8);
+  if (digits.length > 8) out += ' ' + digits.slice(8, 10);
+  return out;
+}
+
+function phoneDigitsCount(raw) {
+  const digits = (raw || '').replace(/\D/g, '').replace(/^8/, '').replace(/^7/, '');
+  return digits.length;
+}
+
 export default function OrderModal({ open, onOpenChange, article, result, totalPrice, quantity, setQuantity, config }) {
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState('+7');
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -37,8 +56,8 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim()) {
-      setError('Заполните имя и телефон');
+    if (!name.trim() || phoneDigitsCount(phone) < 10) {
+      setError('Заполните имя и корректный телефон');
       return;
     }
     setSubmitting(true);
@@ -124,7 +143,13 @@ export default function OrderModal({ open, onOpenChange, article, result, totalP
               </div>
               <div>
                 <Label className="text-[12px] font-semibold text-muted-foreground">Ваш телефон</Label>
-                <Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+7..." className="mt-1" />
+                <Input
+                  value={phone}
+                  onChange={(e) => setPhone(formatPhone(e.target.value))}
+                  onFocus={() => { if (!phone || phone === '+7') setPhone('+7'); }}
+                  className="mt-1"
+                  inputMode="tel"
+                />
               </div>
               <div>
                 <Label className="text-[12px] font-semibold text-muted-foreground">Ваш емайл</Label>
