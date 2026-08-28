@@ -65,6 +65,36 @@ export function calculateResultsBySize(height, length, deltaT) {
   }).filter(Boolean).sort((a, b) => a.basePrice - b.basePrice);
 }
 
+export function getRealPower(modelObj, sections, deltaT) {
+  if (!modelObj || !sections || deltaT <= 0) return 0;
+  const techData = MODEL_TECH_DATA[modelObj.model];
+  const exponentN = techData?.exponentN || EXPONENT_N;
+  const powerFactor = Math.pow(deltaT / NOMINAL_DT, exponentN);
+  const qRealPerSection = modelObj.power * powerFactor;
+  return Math.round(qRealPerSection * sections);
+}
+
+export function buildResultForModel(modelObj, sections, deltaT) {
+  if (!modelObj || !sections || deltaT <= 0) return null;
+  if (sections > getMaxSections(modelObj.model)) return null;
+  const techData = MODEL_TECH_DATA[modelObj.model];
+  const exponentN = techData?.exponentN || EXPONENT_N;
+  const powerFactor = Math.pow(deltaT / NOMINAL_DT, exponentN);
+  const weightPerSection = techData?.weightPerSection || 0;
+  const qRealPerSection = modelObj.power * powerFactor;
+  return {
+    ...modelObj,
+    sections,
+    length: sections * SECTION_LENGTH,
+    qRealPerSection: Math.round(qRealPerSection * 10) / 10,
+    qNomTotal: modelObj.power * sections,
+    qRealTotal: Math.round(qRealPerSection * sections),
+    basePrice: Math.round(modelObj.price * sections * 100) / 100,
+    totalWeight: Math.round(weightPerSection * sections * 10) / 10,
+    bracketCount: getBracketCount(modelObj.tubes, modelObj.height, sections),
+  };
+}
+
 export function calculateTotalPrice(basePrice, colorCode, connectionGroupId, connectionCode, highPressure, ventType, valveType) {
   const colorOption = COLOR_OPTIONS.find(c => c.code === colorCode);
   const colorMarkup = colorOption ? basePrice * (colorOption.surcharge_percent / 100) : 0;
