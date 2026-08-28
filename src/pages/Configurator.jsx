@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import ModelSeries from '@/components/configurator/ModelSeries';
 import ConnectionVariants from '@/components/configurator/ConnectionVariants';
 import BaseParameters from '@/components/configurator/BaseParameters';
@@ -8,12 +8,13 @@ import AirVent from '@/components/configurator/AirVent';
 import RadiatorSpecsTable from '@/components/configurator/RadiatorSpecsTable';
 import OrderModal from '@/components/configurator/OrderModal';
 import ResetConfirmDialog from '@/components/configurator/ResetConfirmDialog';
+import SearchModal from '@/components/configurator/SearchModal';
 import RadiatorServerPreview from '@/components/configurator/RadiatorServerPreview';
-import { calculateResults, calculateResultsBySize, calculateTotalPrice, buildArticle, formatEuro, calculateDeltaT } from '@/lib/radiatorCalc';
+import { calculateResults, calculateResultsBySize, calculateTotalPrice, buildArticle, formatEuro, calculateDeltaT, buildResultForModel } from '@/lib/radiatorCalc';
 import { AVAILABLE_HEIGHTS, CAMBIOTHERM_HEIGHTS, SECTION_LENGTH, MAX_SECTIONS, getConnectionVariantsForType, findConnectionVariant, CONNECTION_SIZE_RESTRICTIONS } from '@/lib/radiatorData';
 import { getMaxSections, getBracketCount } from '@/lib/modelLimits';
 import { getRalColor } from '@/lib/ralColors';
-import { SlidersHorizontal, Copy, Check } from 'lucide-react';
+import { SlidersHorizontal, Copy, Check, Search } from 'lucide-react';
 import { loadPartner, applyPartnerTheme, trackWidgetEvent, EVENT_TYPES, getWidgetIdFromUrl } from '@/lib/widgetTracking';
 
 export default function Configurator() {
@@ -50,6 +51,8 @@ export default function Configurator() {
   const [showResults, setShowResults] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [selectionLocked, setSelectionLocked] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Widget partner: load theme + track open
@@ -89,7 +92,41 @@ export default function Configurator() {
     setShowResults(false);
     setShowOrderModal(false);
     setQuantity(1);
+    setSelectionLocked(false);
+    setShowSearchModal(false);
   };
+
+  const unlockSet = (setter) => (val) => { setSelectionLocked(false); setter(val); };
+
+  const applySearch = useCallback((series, modelObj, sections) => {
+    const deltaTVal = calculateDeltaT(flowTemp, returnTemp, airTemp);
+    const built = buildResultForModel(modelObj, sections, deltaTVal);
+    if (!built) return;
+    const variants = getConnectionVariantsForType(series);
+    const firstVariant = variants[0] || {};
+    const h = modelObj.height;
+    setRadiatorType(series);
+    setHeight(h);
+    setSelectedTubes(modelObj.tubes);
+    setSelectedSections(sections);
+    setMinHeight(h);
+    setMaxHeight(h);
+    setMinLength(Math.max((sections - 1) * SECTION_LENGTH, SECTION_LENGTH));
+    setMaxLength((sections + 3) * SECTION_LENGTH);
+    setRequiredPower(Math.floor(built.qRealPerSection * sections));
+    setColorCode('AF');
+    setRalCode('9016');
+    setHighPressure(false);
+    setDrainValve(false);
+    setVentType(null);
+    setConnGroup(firstVariant.groupId || '');
+    setConnCode(firstVariant.code || '');
+    setConnSize('12');
+    setVentConnSize('12');
+    setSelected(built);
+    setSelectionLocked(true);
+    setShowResults(true);
+  }, [flowTemp, returnTemp, airTemp]);
 
   useEffect(() => {
     if (!radiatorType) return;
@@ -229,12 +266,14 @@ export default function Configurator() {
 
   // Сброс невалидных выборов при каскадной фильтрации
   useEffect(() => {
+    if (selectionLocked) return;
     if (selectedTubes && availableOptions.tubes.size > 0 && !availableOptions.tubes.has(selectedTubes)) {
       setSelectedTubes(null);
     }
   }, [availableOptions, selectedTubes]);
 
   useEffect(() => {
+    if (selectionLocked) return;
     if (height && availableOptions.heights.size > 0 && !availableOptions.heights.has(height)) {
       const first = [...availableOptions.heights].sort((a, b) => a - b)[0];
       setHeight(first || null);
@@ -242,6 +281,7 @@ export default function Configurator() {
   }, [availableOptions, height]);
 
   useEffect(() => {
+    if (selectionLocked) return;
     if (selectedSections && availableOptions.sections.size > 0 && !availableOptions.sections.has(selectedSections)) {
       setSelectedSections(null);
     }
@@ -270,6 +310,7 @@ export default function Configurator() {
   // При изменении базовых параметров — сброс к самому дешёвому варианту
   useEffect(() => {
     if (!showResults) return;
+    if (selectionLocked) return;
     setSelectedTubes(null);
     setSelectedSections(null);
   }, [radiatorType, requiredPower, minHeight, maxHeight, minLength, maxLength, deltaT]);
@@ -277,6 +318,7 @@ export default function Configurator() {
   // Автовыбор самого дешёвого варианта
   useEffect(() => {
     if (!showResults) return;
+    if (selectionLocked) return;
     if (results.length > 0) {
       const cheapest = results[0];
       setSelected(cheapest);
@@ -287,7 +329,7 @@ export default function Configurator() {
     }
   }, [results, showResults]);
 
-  const hasNoVariants = availableOptions.heights.size === 0;
+  const hasNoVariants = !selectionLocked && availableOptions.heights.size === 0;
 
   const previewValveType = findConnectionVariant(connGroup, connCode)?.valveType || '';
   const totalPrice = selected
@@ -321,29 +363,37 @@ export default function Configurator() {
     <div className="min-h-screen lg:h-screen bg-background flex flex-col lg:flex-row lg:overflow-hidden">
       {/* Sidebar */}
       <aside className="w-full lg:w-[400px] shrink-0 bg-background flex flex-col lg:overflow-hidden">
-        <div className="px-4 flex items-center min-h-[68px] bg-background border-b border-border/30 shrink-0">
+        <div className="px-4 flex items-center justify-between min-h-[68px] bg-background border-b border-border/30 shrink-0">
           <button
             onClick={() => setShowReset(true)}
             className="text-[14px] font-bold text-primary hover:text-primary/80 transition-colors"
           >
             Новый подбор
           </button>
+          <button
+            onClick={() => setShowSearchModal(true)}
+            className="flex items-center gap-1.5 text-[13px] font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            title="Поиск радиатора"
+          >
+            <Search className="w-4 h-4" />
+            Поиск
+          </button>
         </div>
 
         <div className="flex-1 lg:overflow-y-auto p-4 space-y-7">
           <ModelSeries
             radiatorType={radiatorType}
-            setRadiatorType={setRadiatorType}
+            setRadiatorType={unlockSet(setRadiatorType)}
           />
           <BaseParameters
-            requiredPower={requiredPower} setRequiredPower={setRequiredPower}
-            flowTemp={flowTemp} setFlowTemp={setFlowTemp}
-            returnTemp={returnTemp} setReturnTemp={setReturnTemp}
-            airTemp={airTemp} setAirTemp={setAirTemp}
-            minHeight={minHeight} setMinHeight={handleMinHeightChange}
-            maxHeight={maxHeight} setMaxHeight={setMaxHeight}
-            minLength={minLength} setMinLength={handleMinLengthChange}
-            maxLength={maxLength} setMaxLength={setMaxLength}
+            requiredPower={requiredPower} setRequiredPower={unlockSet(setRequiredPower)}
+            flowTemp={flowTemp} setFlowTemp={unlockSet(setFlowTemp)}
+            returnTemp={returnTemp} setReturnTemp={unlockSet(setReturnTemp)}
+            airTemp={airTemp} setAirTemp={unlockSet(setAirTemp)}
+            minHeight={minHeight} setMinHeight={unlockSet(handleMinHeightChange)}
+            maxHeight={maxHeight} setMaxHeight={unlockSet(setMaxHeight)}
+            minLength={minLength} setMinLength={unlockSet(handleMinLengthChange)}
+            maxLength={maxLength} setMaxLength={unlockSet(setMaxLength)}
           />
 
           {!showResults ? (
@@ -366,16 +416,16 @@ export default function Configurator() {
               </div>
               {/* Шаг 2: уточнение и заказ */}
               <ExtendedParameters
-                selectedTubes={selectedTubes} setSelectedTubes={setSelectedTubes}
-                height={height} setHeight={setHeight}
+                selectedTubes={selectedTubes} setSelectedTubes={unlockSet(setSelectedTubes)}
+                height={height} setHeight={unlockSet(setHeight)}
                 availableHeights={availableHeights}
                 minHeight={minHeight} maxHeight={maxHeight}
                 minLength={minLength} maxLength={maxLength}
-                selectedSections={selectedSections} setSelectedSections={setSelectedSections}
+                selectedSections={selectedSections} setSelectedSections={unlockSet(setSelectedSections)}
                 availableOptions={availableOptions}
                 sectionVariants={sectionVariants}
                 selected={selected}
-                onSelectVariant={setSelected}
+                onSelectVariant={unlockSet(setSelected)}
               />
               <ConnectionVariants
                 radiatorType={radiatorType}
@@ -491,6 +541,11 @@ export default function Configurator() {
         totalPrice={totalPrice}
         onConfirm={handleReset}
         onCancel={() => setShowReset(false)}
+      />
+      <SearchModal
+        open={showSearchModal}
+        onOpenChange={setShowSearchModal}
+        onSearch={applySearch}
       />
       <OrderModal
         open={showOrderModal}
