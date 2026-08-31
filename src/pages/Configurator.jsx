@@ -502,6 +502,8 @@ export default function Configurator() {
             connSize={connSize}
             ventConnSize={ventConnSize}
             drainValve={drainValve}
+            article={article}
+            includeBracketKLK={includeBracketKLK}
           />
           </header>
         )}

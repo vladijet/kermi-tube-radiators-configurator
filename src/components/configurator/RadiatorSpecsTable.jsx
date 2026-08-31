@@ -1,5 +1,6 @@
 import React from 'react';
 import { COLOR_OPTIONS } from '@/lib/radiatorData';
+import MountingDiagramButton from './MountingDiagramButton';
 
 function SpecItem({ label, value, isPrimary }) {
   return (
@@ -17,7 +18,7 @@ function SpecItem({ label, value, isPrimary }) {
   );
 }
 
-export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCode, connCode, radiatorType, valveType, highPressure, ventType, ventPosition, connSize, ventConnSize, drainValve }) {
+export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCode, connCode, radiatorType, valveType, highPressure, ventType, ventPosition, connSize, ventConnSize, drainValve, article, connGroup, includeBracketKLK }) {
   if (!selected) return null;
 
   const colorOpt = COLOR_OPTIONS.find(c => c.code === colorCode);
@@ -81,11 +82,32 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
     { label: `Q расч ΔT${deltaT.toFixed(0)}`, value: `${selected.qRealTotal} Вт`, isPrimary: true },
   ];
 
+  const diagramConfig = {
+    series: radiatorType,
+    article,
+    selected,
+    connDisplay: valveType ? `${connCode} ${valveType}` : connCode,
+    connSize,
+    ventSpec: ventSpec.value,
+    pressure: highPressure ? '16 бар' : '10 бар',
+    colorCode,
+    ralCode,
+    colorLabel,
+    deltaT,
+    includeBracketKLK,
+    connGroup,
+  };
+
   return (
-    <div className="flex flex-wrap gap-x-6 gap-y-3 py-3 border-t border-border/30">
-      {specs.map((s, i) => (
-        <SpecItem key={i} label={s.label} value={s.value} isPrimary={s.isPrimary} />
-      ))}
+    <div className="py-3 border-t border-border/30">
+      <div className="flex flex-wrap gap-x-6 gap-y-3">
+        {specs.map((s, i) => (
+          <SpecItem key={i} label={s.label} value={s.value} isPrimary={s.isPrimary} />
+        ))}
+      </div>
+      <div className="mt-3">
+        <MountingDiagramButton config={diagramConfig} />
+      </div>
     </div>
   );
 }
