@@ -2,6 +2,7 @@
 // and returns the PNG blob. The PNG is sent to the server function which wraps it into a PDF.
 import { getRalColor } from './ralColors';
 import { getInteraxisN, getFloorOffsetA, getDepthT, getBracketPositions, getKlkBracketCount, getBracketK } from './mountingGeometry';
+import { base44 } from '@/api/base44Client';
 
 // User-supplied KLK bracket assets (front view)
 const BRACKET_UP_URL = 'https://media.base44.com/images/public/6a5dc0cf6f2847b3a26da201/cbed4d66c_KLK_front_upZB0251_ZB0254.svg';
@@ -24,6 +25,32 @@ async function fetchSvgText(url) {
   } catch (_e) {
     return null;
   }
+}
+
+function b64ToUtf8(b64) {
+  try {
+    return decodeURIComponent(escape(atob(b64)));
+  } catch (_e) {
+    return null;
+  }
+}
+
+// Fetch both bracket SVGs, falling back to the server function if a direct browser
+// fetch is blocked by CORS (the server fetches the media URLs with no restrictions).
+async function resolveBracketSvgs() {
+  const [upText, downText] = await Promise.all([fetchSvgText(BRACKET_UP_URL), fetchSvgText(BRACKET_DOWN_URL)]);
+  if (upText && downText) return { upText, downText };
+  let assets = null;
+  try {
+    const res = await base44.functions.invoke('generateMountingDiagramPdf', { getAssets: true });
+    assets = res?.data;
+  } catch (_e) {
+    assets = null;
+  }
+  return {
+    upText: upText || (assets?.up ? b64ToUtf8(assets.up) : null),
+    downText: downText || (assets?.down ? b64ToUtf8(assets.down) : null),
+  };
 }
 
 function parseViewBox(text) {
@@ -119,7 +146,7 @@ function dimH(y, x1, x2, label, color = '#111', fontSize = 3) {
     <text x="${midX}" y="${y - 1.6}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${color}" text-anchor="middle">${escapeXml(label)}</text>`;
 }
 
-function buildHeaderSvg() {
+function buildHeaderSvg(article) {
   return `
     <text x="15" y="10" font-family="Arial, sans-serif" font-size="2.6" fill="#9a9a9a">PDF Монтажная схема</text>
     <g transform="translate(15 14)">
@@ -135,7 +162,7 @@ function buildHeaderSvg() {
     <text x="105" y="45" font-family="Arial, sans-serif" font-weight="bold" font-size="7" fill="#111111" text-anchor="middle" letter-spacing="1">МОНТАЖНАЯ СХЕМА</text>
     <text x="15" y="54" font-family="Arial, sans-serif" font-size="3" fill="#9a9a9a">Артикул</text>
     <rect x="50" y="49.5" width="145" height="6" fill="#dfff00"/>
-    <text x="52" y="53.8" font-family="Arial, sans-serif" font-weight="bold" font-size="3.6" fill="#111111">${escapeXml(window.__diagArticle || '')}</text>`;
+    <text x="52" y="53.8" font-family="Arial, sans-serif" font-weight="bold" font-size="3.6" fill="#111111">${escapeXml(article || '')}</text>`;
 }
 
 function buildTableSvg(cfg) {
@@ -286,14 +313,12 @@ function buildVisualSvg(cfg, brackets) {
 }
 
 async function buildPageSvg(cfg) {
-  const [upText, downText] = await Promise.all([fetchSvgText(BRACKET_UP_URL), fetchSvgText(BRACKET_DOWN_URL)]);
+  const { upText, downText } = await resolveBracketSvgs();
   const brackets = {
     up: upText ? await svgToPngDataUri(upText) : null,
     down: downText ? await svgToPngDataUri(downText) : null,
   };
-  // expose article to header builder
-  window.__diagArticle = cfg.article;
-  const inner = buildHeaderSvg() + buildTableSvg(cfg) + buildVisualSvg(cfg, brackets);
+  const inner = buildHeaderSvg(cfg.article) + buildTableSvg(cfg) + buildVisualSvg(cfg, brackets);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(PAGE_W * PX_PER_MM)}" height="${Math.round(PAGE_H * PX_PER_MM)}" viewBox="0 0 ${PAGE_W} ${PAGE_H}">${inner}</svg>`;
 }
 
@@ -323,7 +348,6 @@ async function rasterize(svgString) {
 export async function buildMountingDiagram(cfg) {
   const svg = await buildPageSvg(cfg);
   const pngBlob = await rasterize(svg);
-  delete window.__diagArticle;
   return pngBlob;
 }
 
