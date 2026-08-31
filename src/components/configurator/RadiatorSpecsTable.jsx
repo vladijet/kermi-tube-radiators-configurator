@@ -86,6 +86,8 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
     series: radiatorType,
     article,
     selected,
+    connCode,
+    valveType,
     connDisplay: valveType ? `${connCode} ${valveType}` : connCode,
     connSize,
     ventSpec: ventSpec.value,
@@ -96,6 +98,8 @@ export default function RadiatorSpecsTable({ selected, deltaT, colorCode, ralCod
     deltaT,
     includeBracketKLK,
     connGroup,
+    ventType,
+    drainValve,
   };
 
   return (

@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 // Add page imports here
 import Configurator from './pages/Configurator';
+import MountingScheme from './pages/MountingScheme';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
@@ -46,6 +47,7 @@ const AuthenticatedApp = () => {
     <Routes>
       {/* Add your page Route elements here */}
       <Route path="/" element={<Configurator />} />
+      <Route path="/mounting-scheme" element={<MountingScheme />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
