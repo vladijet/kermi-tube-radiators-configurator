@@ -10,6 +10,8 @@ export default function MountingDiagramButton({ config }) {
     const params = new URLSearchParams({
       article: config.article || '',
       series: config.series || '',
+      model: config.selected?.model || '',
+      tubes: String(config.selected?.tubes ?? ''),
       sections: String(config.selected?.sections ?? ''),
       height: String(config.selected?.height ?? ''),
       connectionCode: config.connCode || '',
