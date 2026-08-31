@@ -1,9 +1,8 @@
 import React from 'react';
-import { ExternalLink } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 // Opens the mounting scheme page in a new browser tab, carrying the current
-// radiator config as query params. The page renders the same front-view SVG as
-// the configurator preview.
+// radiator config as query params. Rendered as a borderless text link.
 export default function MountingDiagramButton({ config }) {
   const handleOpen = () => {
     if (!config) return;
@@ -29,10 +28,10 @@ export default function MountingDiagramButton({ config }) {
       type="button"
       onClick={handleOpen}
       disabled={!config}
-      className="flex items-center gap-2 px-3 py-2 rounded-premium bg-[#c5e315] text-white text-[12px] font-bold hover:bg-[#b3d414] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-      title="Открыть схему монтажа"
+      className="flex items-center gap-1.5 bg-transparent text-[12px] font-semibold text-primary hover:text-primary/80 hover:underline underline-offset-4 transition-all disabled:opacity-50 disabled:no-underline"
+      title="Скачать схему монтажа"
     >
-      <ExternalLink className="w-4 h-4" />
+      <Download className="w-4 h-4" />
       Схема монтажа
     </button>
   );

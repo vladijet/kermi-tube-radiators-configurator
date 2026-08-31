@@ -10,6 +10,7 @@ import OrderModal from '@/components/configurator/OrderModal';
 import ResetConfirmDialog from '@/components/configurator/ResetConfirmDialog';
 import SearchModal from '@/components/configurator/SearchModal';
 import RadiatorServerPreview from '@/components/configurator/RadiatorServerPreview';
+import MountingDiagramButton from '@/components/configurator/MountingDiagramButton';
 import { calculateResults, calculateResultsBySize, calculateTotalPrice, buildArticle, formatEuro, calculateDeltaT, buildResultForModel } from '@/lib/radiatorCalc';
 import { AVAILABLE_HEIGHTS, CAMBIOTHERM_HEIGHTS, SECTION_LENGTH, MAX_SECTIONS, getConnectionVariantsForType, findConnectionVariant, CONNECTION_SIZE_RESTRICTIONS } from '@/lib/radiatorData';
 import { getMaxSections, getBracketCount } from '@/lib/modelLimits';
@@ -507,7 +508,7 @@ export default function Configurator() {
           />
           </header>
         )}
-        <div className="flex-1 flex flex-col min-h-0 bg-background">
+        <div className="relative flex-1 flex flex-col min-h-0 bg-background">
           <div className="flex-1 min-h-0 lg:overflow-y-auto">
             <RadiatorServerPreview
               sections={previewSections}
@@ -519,7 +520,21 @@ export default function Configurator() {
               drainValve={drainValve}
             />
           </div>
-
+          {selected && (
+            <div className="absolute top-3 right-4 z-20">
+              <MountingDiagramButton config={{
+                article,
+                series: radiatorType,
+                selected,
+                connCode,
+                valveType: previewValveType,
+                colorCode,
+                ralCode,
+                ventType,
+                drainValve,
+              }} />
+            </div>
+          )}
         </div>
       </main>
 
