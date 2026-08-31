@@ -13,8 +13,11 @@ export default function MountingScheme() {
   const sections = Number(params.get('sections')) || 0;
   const height = Number(params.get('height')) || 0;
   const connectionCode = params.get('connectionCode') || 'N12';
+  const valveType = params.get('valveType') || '';
   const ralCode = params.get('ralCode') || '9016';
   const color = getRalColor(ralCode).hex;
+  const ventType = params.get('ventType') || '';
+  const drainValve = params.get('drainValve') === '1';
 
   const hasParams = sections > 0 && height > 0 && !!model;
   const dims = useMemo(
@@ -34,7 +37,16 @@ export default function MountingScheme() {
 
         <div className="w-full flex-1 flex items-center justify-center min-h-[50vh]">
           {hasParams ? (
-            <MountingDrawing dims={dims} connectionCode={connectionCode} color={color} />
+            <MountingDrawing
+              dims={dims}
+              sections={sections}
+              height={height}
+              connectionCode={connectionCode}
+              valveType={valveType}
+              color={color}
+              ventType={ventType}
+              drainValve={drainValve}
+            />
           ) : (
             <div className="flex flex-col items-center gap-3 text-center max-w-md">
               <ExternalLink className="w-10 h-10 text-neutral-300" />

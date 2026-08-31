@@ -148,7 +148,7 @@ function calcL3(sections, cc) {
   return ((sections + 1) / 2) * 45 - 25; // cc === '96'
 }
 
-function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drainValve) {
+function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drainValve, hideArrows = false) {
   const base = colorHex;
   const hi = lighten(base, 0.22);
   const sh = darken(base, 0.28);
@@ -310,9 +310,11 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
     case '98': { const L3 = calcL3(sections, '98'); arrows = vArr(botTip + arrLen, botTip, L3 + 0.5, RED) + vArr(botTip, botTip + arrLen, L3 + 50.5, BLUE); break; }
     default: arrows = hArr(leftTip - arrLen, leftTip, topY, RED) + hArr(leftTip, leftTip - arrLen, botY, BLUE);
   }
-  p.push(arrows);
+  if (!hideArrows) p.push(arrows);
 
-  const pad = gap + arrLen + headW + HUB_R + 8;
+  // Compact viewBox for the mounting scheme (no flow arrows): just enough room
+  // for the end caps, air vent, L/E markers and thermostatic valve.
+  const pad = hideArrows ? 55 : (gap + arrLen + headW + HUB_R + 8);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-pad} ${-pad} ${totalW + 2 * pad} ${H + 2 * pad}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">${p.join('')}</svg>`;
 }
 
@@ -333,8 +335,9 @@ Deno.serve(async (req) => {
     const ventSide = String(params.ventSide || '');
     const ventType = String(params.ventType || '');
     const drainValve = String(params.drainValve || '') === 'true' || params.drainValve === true;
+    const hideArrows = String(params.hideArrows || '') === 'true' || params.hideArrows === true;
 
-    const svg = buildSvg(sections, H, connectionCode, color, valveType, ventSide, ventType, drainValve);
+    const svg = buildSvg(sections, H, connectionCode, color, valveType, ventSide, ventType, drainValve, hideArrows);
 
     if (req.method === 'GET') {
       return new Response(svg, {
