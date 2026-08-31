@@ -49,9 +49,8 @@ export function getMountingDimensions({ model, series, sections, height, tubes: 
   const topScrewOffset = OFFSET_35;
   const C = A + H - topScrewOffset;
 
-  // D = wall face to tube centre = wall clearance + bracket plate + half depth.
-  const bracketPlate = 10;
-  const D = Math.round(WALL_CLEARANCE_30 + bracketPlate + T / 2);
+  // D = wall face to tube centre = wall clearance + half depth.
+  const D = Math.round(WALL_CLEARANCE_30 + T / 2);
 
   return {
     H, B, T, N, K, A, C, D,
