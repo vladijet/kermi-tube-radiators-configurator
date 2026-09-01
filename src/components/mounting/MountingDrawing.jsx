@@ -227,12 +227,12 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       ))}
 
       {/* ===== front-view dimensions ===== */}
-      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyRightX} y2={bodyTopY} label={`B = ${B}`} offset={DIM} side="top" />
-      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyLeftX} y2={bodyBottomY} label={`H = ${H}`} offset={DIM} side="left" />
-      <DimLine x1={bodyRightX} y1={nTop} x2={bodyRightX} y2={nBottom} label={`N = ${N}`} offset={DIM} side="right" />
-      <DimLine x1={bodyRightX} y1={bodyBottomY} x2={bodyRightX} y2={floorY} label={`A = ${A}`} offset={DIM * 2.1} side="right" />
+      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyRightX} y2={bodyTopY} label={`${B}`} offset={DIM} side="top" />
+      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyLeftX} y2={bodyBottomY} label={`${H}`} offset={DIM} side="left" />
+      <DimLine x1={bodyRightX} y1={nTop} x2={bodyRightX} y2={nBottom} label={`${N}`} offset={DIM} side="right" />
+      <DimLine x1={bodyRightX} y1={bodyBottomY} x2={bodyRightX} y2={floorY} label={`${A}`} offset={DIM * 2.1} side="right" />
       {bracketCenters.length >= 2 && (
-        <DimLine x1={firstBx} y1={kY} x2={lastBx} y2={kY} label={`K = ${K}`} offset={DIM * 0.9} side="bottom" />
+        <DimLine x1={firstBx} y1={kY} x2={lastBx} y2={kY} label={`${K}`} offset={DIM * 0.9} side="bottom" />
       )}
       {bracketCenters.length >= 1 && (
         <DimLine x1={firstBx - bw / 2} y1={fuTop} x2={firstBx + bw / 2} y2={fuTop} label="45" offset={DIM * 0.5} side="top" />
@@ -262,11 +262,11 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
         dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
 
       {/* ===== side-view dimensions ===== */}
-      <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`T = ${T}`} offset={DIM * 0.7} side="top" />
-      <DimLine x1={radBackX} y1={(topScrewY + bottomScrewY) / 2} x2={wallLeftX} y2={(topScrewY + bottomScrewY) / 2} label="30 мм." offset={DIM * 0.4} side="top" />
-      <DimLine x1={tubeCenterX} y1={bodyBottomY} x2={wallLeftX} y2={bodyBottomY} label={`D = ${D}`} offset={DIM * 0.5} side="bottom" />
+      <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`${T}`} offset={DIM * 0.7} side="top" />
+      <DimLine x1={radBackX} y1={(topScrewY + bottomScrewY) / 2} x2={wallLeftX} y2={(topScrewY + bottomScrewY) / 2} label="30" offset={DIM * 0.4} side="top" />
+      <DimLine x1={tubeCenterX} y1={bodyBottomY} x2={wallLeftX} y2={bodyBottomY} label={`${D}`} offset={DIM * 0.5} side="bottom" />
       <DimLine x1={wallLeftX} y1={topScrewY} x2={wallLeftX} y2={bottomScrewY} label={`${screwSpacing}`} offset={DIM} side="right" />
-      <DimLine x1={wallLeftX} y1={topScrewY} x2={wallLeftX} y2={floorY} label={`C = ${C}`} offset={DIM * 2.3} side="right" />
+      <DimLine x1={wallLeftX} y1={topScrewY} x2={wallLeftX} y2={floorY} label={`${C}`} offset={DIM * 2.3} side="right" />
     </svg>
   );
 }
