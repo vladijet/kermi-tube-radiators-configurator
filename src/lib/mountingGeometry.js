@@ -47,7 +47,7 @@ export function getMountingDimensions({ model, series, sections, height, tubes: 
   }
 
   // C = distance from top anchor screw to floor (top screw ~35 mm below radiator top).
-  const topScrewOffset = OFFSET_35;
+  const topScrewOffset = 55;
   const C = A + H - topScrewOffset;
 
   // D = wall face to tube centre = wall clearance + half depth.

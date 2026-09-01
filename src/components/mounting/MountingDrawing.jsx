@@ -31,8 +31,13 @@ function DimLine({ x1, y1, x2, y2, label, offset, side }) {
         <line x1={x2} y1={y2} x2={x2} y2={dimY + over} stroke={STROKE} strokeWidth={THIN} />
       </>
     );
-    const ly = dimY - 4;
-    labelEl = <text x={(x1 + x2) / 2} y={ly} fontSize={FONT} fill={STROKE} textAnchor="middle" fontFamily="sans-serif">{label}</text>;
+    const w = String(label).length * FONT * 0.62 + 6;
+    labelEl = (
+      <>
+        <rect x={(x1 + x2) / 2 - w / 2} y={dimY - (FONT + 2) / 2} width={w} height={FONT + 2} fill="white" />
+        <text x={(x1 + x2) / 2} y={dimY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
+      </>
+    );
     dim = <line x1={x1} y1={dimY} x2={x2} y2={dimY} stroke={STROKE} strokeWidth={MED} markerStart="url(#dimArrowStart)" markerEnd="url(#dimArrowEnd)" />;
   } else {
     const dx = side === 'left' ? -offset : offset;
@@ -45,8 +50,13 @@ function DimLine({ x1, y1, x2, y2, label, offset, side }) {
       </>
     );
     const my = (y1 + y2) / 2;
-    const lx = side === 'left' ? dimX - 9 : dimX + 9;
-    labelEl = <text x={lx} y={my} fontSize={FONT} fill={STROKE} textAnchor="middle" fontFamily="sans-serif" transform={`rotate(-90 ${lx} ${my})`}>{label}</text>;
+    const w = String(label).length * FONT * 0.62 + 6;
+    labelEl = (
+      <>
+        <rect x={dimX - (FONT + 2) / 2} y={my - w / 2} width={FONT + 2} height={w} fill="white" />
+        <text x={dimX} y={my} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif" transform={`rotate(-90 ${dimX} ${my})`}>{label}</text>
+      </>
+    );
     dim = <line x1={dimX} y1={y1} x2={dimX} y2={y2} stroke={STROKE} strokeWidth={MED} markerStart="url(#dimArrowStart)" markerEnd="url(#dimArrowEnd)" />;
   }
   return <g>{exts}{dim}{labelEl}</g>;
@@ -262,11 +272,11 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
         dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
 
       {/* ===== side-view dimensions ===== */}
-      <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`${T}`} offset={DIM * 0.7} side="top" />
-      <DimLine x1={radBackX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label="30" offset={DIM * 0.7} side="top" />
+      <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`${T}`} offset={DIM * 1.3} side="top" />
+      <DimLine x1={radBackX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label="30" offset={DIM * 1.3} side="top" />
       <DimLine x1={tubeCenterX} y1={bodyBottomY} x2={wallLeftX} y2={bodyBottomY} label={`${D}`} offset={DIM * 0.5} side="bottom" />
       <DimLine x1={wallLeftX} y1={fuHoleY} x2={wallLeftX} y2={fuHoleY + screwSpacing * scale} label={`${screwSpacing}`} offset={DIM} side="right" />
-      <DimLine x1={wallLeftX} y1={topScrewY} x2={wallLeftX} y2={floorY} label={`${C}`} offset={DIM * 2.3} side="right" />
+      <DimLine x1={wallLeftX} y1={fuHoleY} x2={wallLeftX} y2={floorY} label={`${C}`} offset={DIM * 2.3} side="right" />
     </svg>
   );
 }
