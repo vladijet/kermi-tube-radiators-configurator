@@ -256,10 +256,8 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
         viewBox={sideView.viewBox} preserveAspectRatio="xMidYMid meet"
         dangerouslySetInnerHTML={{ __html: sideView.inner }} />
       {/* ===== KLK brackets — official assets (side view, mirrored, wall on the right) ===== */}
-      <g transform={`translate(${wallLeftX} ${fuTop}) scale(-1 1)`}>
-        <svg x={0} y={0} width={SIDE_UP.w * scale} height={SIDE_UP.h * scale} viewBox={`0 0 ${SIDE_UP.w} ${SIDE_UP.h}`} preserveAspectRatio="none"
-          dangerouslySetInnerHTML={{ __html: sideUpInner(0) }} />
-      </g>
+      <svg x={wallLeftX - 57.5 * scale} y={fuTop} width={SIDE_UP.w * scale} height={SIDE_UP.h * scale} viewBox={`0 0 ${SIDE_UP.w} ${SIDE_UP.h}`} preserveAspectRatio="none"
+        dangerouslySetInnerHTML={{ __html: sideUpInner(0) }} />
       <svg x={wallLeftX - SIDE_DOWN.w * scale} y={fdBottom - SIDE_DOWN.h * scale} width={SIDE_DOWN.w * scale} height={SIDE_DOWN.h * scale} viewBox={`0 0 ${SIDE_DOWN.w} ${SIDE_DOWN.h}`} preserveAspectRatio="none"
         dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
 
