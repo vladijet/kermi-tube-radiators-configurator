@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { SECTION_LENGTH } from '@/lib/radiatorData';
-import { OFFSET_35, BRACKET_WIDTH_45, WALL_CLEARANCE_30 } from '@/lib/mountingGeometry';
+import { OFFSET_12, OFFSET_35, BRACKET_WIDTH_45, WALL_CLEARANCE_30 } from '@/lib/mountingGeometry';
 import { buildSideViewSvg } from '@/lib/sideViewAssembly';
 import { FRONT_UP, FRONT_DOWN, SIDE_UP, SIDE_DOWN, frontUpInner, frontDownInner, sideUpInner, sideDownInner } from '@/lib/klkBracketAssets';
 
@@ -237,13 +237,21 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       ))}
 
       {/* ===== front-view dimensions ===== */}
+      {/* Top: end-cap 12 (left) + B (sections length) + end-cap 12 (right) */}
+      <DimLine x1={bodyLeftX - OFFSET_12 * scale} y1={bodyTopY} x2={bodyLeftX} y2={bodyTopY} label="12" offset={DIM} side="top" />
       <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyRightX} y2={bodyTopY} label={`${B}`} offset={DIM} side="top" />
-      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyLeftX} y2={bodyBottomY} label={`${H}`} offset={DIM} side="left" />
-      <DimLine x1={bodyRightX} y1={nTop} x2={bodyRightX} y2={nBottom} label={`${N}`} offset={DIM} side="right" />
-      <DimLine x1={bodyRightX} y1={bodyBottomY} x2={bodyRightX} y2={floorY} label={`${A}`} offset={DIM * 2.1} side="right" />
+      <DimLine x1={bodyRightX} y1={bodyTopY} x2={bodyRightX + OFFSET_12 * scale} y2={bodyTopY} label="12" offset={DIM} side="top" />
+      {/* Top inner: K (bracket spacing) moved from bottom to top */}
       {bracketCenters.length >= 2 && (
-        <DimLine x1={firstBx} y1={kY} x2={lastBx} y2={kY} label={`${K}`} offset={DIM * 0.9} side="bottom" />
+        <DimLine x1={firstBx} y1={bodyTopY} x2={lastBx} y2={bodyTopY} label={`${K}`} offset={DIM * 0.75} side="top" />
       )}
+      {/* Left: H (body height) */}
+      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyLeftX} y2={bodyBottomY} label={`${H}`} offset={DIM} side="left" />
+      {/* Left outer: N (interaxis) moved from right to left */}
+      <DimLine x1={bodyLeftX} y1={nTop} x2={bodyLeftX} y2={nBottom} label={`${N}`} offset={DIM * 1.9} side="left" />
+      {/* Left bottom: A (floor clearance) moved from right to left */}
+      <DimLine x1={bodyLeftX} y1={bodyBottomY} x2={bodyLeftX} y2={floorY} label={`${A}`} offset={DIM} side="left" />
+      {/* Bracket details unchanged */}
       {bracketCenters.length >= 1 && (
         <DimLine x1={firstBx - bw / 2} y1={fuTop} x2={firstBx + bw / 2} y2={fuTop} label="45" offset={DIM * 0.5} side="top" />
       )}
