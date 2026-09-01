@@ -34,7 +34,8 @@ export function getMountingDimensions({ model, series, sections, height, tubes: 
   const B = (Number(sections) || 0) * SECTION_LENGTH;
   const offset = N_OFFSET[series] ?? 50;
   const N = Math.max(H - offset, 0);
-  const A = Math.round(T * 0.75); // floor clearance
+  const A_BY_TUBES = { 2: 80, 3: 80, 4: 110, 5: 120, 6: 130 };
+  const A = A_BY_TUBES[tubes] ?? 80; // floor clearance
 
   const count = getKlkBracketCount(tubes, H, Number(sections) || 0);
   const positions = getBracketPositions(Number(sections) || 0, count);
