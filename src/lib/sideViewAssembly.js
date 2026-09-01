@@ -117,10 +117,11 @@ export function buildSideViewSvg({ tubes, height, color, connectionCode, valveTy
   parts.push(`<path d="${capPath}" fill="${manifoldSolid}"/>`);
   parts.push(`<path d="${capPath}" fill="${manifoldSolid}" transform="matrix(1 0 0 -1 0 ${H})"/>`);
 
-  // ---- Layer 2: tubes ----
-  parts.push(`<path d="${leftTubePath(H)}" fill="url(#svTube)"/>`);
+  // ---- Layer 2: tubes (left/right tubes mirrored so the rounded profile faces outward) ----
+  parts.push(`<path d="${leftTubePath(H)}" fill="url(#svTube)" transform="matrix(-1 0 0 1 ${TUBE_W} 0)"/>`);
   for (let i = 1; i < N - 1; i++) parts.push(`<path d="${centerTubePath(PITCH * i, H)}" fill="url(#svTube)"/>`);
-  parts.push(`<path d="${rightTubePath(PITCH * (N - 1), H)}" fill="url(#svTube)"/>`);
+  const rightX = PITCH * (N - 1);
+  parts.push(`<path d="${rightTubePath(rightX, H)}" fill="url(#svTube)" transform="matrix(-1 0 0 1 ${2 * rightX + TUBE_W} 0)"/>`);
 
   // ---- Layer 3: manifold gradient overlay ----
   parts.push(`<path d="${capPath}" fill="url(#svManTop)"/>`);
@@ -153,12 +154,6 @@ export function buildSideViewSvg({ tubes, height, color, connectionCode, valveTy
     }
   }
 
-  // side connection stubs (codes 12/34/14/32) — protrude from the front face
-  const sideMap = { '12': 1, '34': 1, '14': 1, '32': 1 };
-  if (sideMap[cc]) {
-    parts.push(pipeStub(T, topManCy - STUB_W / 2, STUB_LEN, STUB_W, pipeFill, outline));
-    parts.push(pipeStub(T, botManCy - STUB_W / 2, STUB_LEN, STUB_W, pipeFill, outline));
-  }
 
   // air vent (built-in, on top manifold)
   if (ventType === '1' && (ventSide === 'left' || ventSide === 'right' || ventSide === 'both')) {

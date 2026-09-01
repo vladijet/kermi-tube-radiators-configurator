@@ -12,7 +12,7 @@ const STROKE = '#5B5B5B';
 const THIN = 0.8;
 const MED = 1.2;
 const FONT = 11;
-const DIM = 32; // base offset of a dimension line from the object (~1.8× for clearance)
+const DIM = 40; // base offset of a dimension line from the object (~1.8× for clearance)
 const EXT = 6;  // extension-line overshoot
 
 // Dimension line: (x1,y1)-(x2,y2) are the measured object edges; the dim line is
@@ -30,7 +30,7 @@ function DimLine({ x1, y1, x2, y2, label, offset, side }) {
         <line x1={x2} y1={y2} x2={x2} y2={dimY + over} stroke={STROKE} strokeWidth={THIN} />
       </>
     );
-    const ly = side === 'top' ? dimY - 2 : dimY + FONT + 1;
+    const ly = dimY - 4;
     labelEl = <text x={(x1 + x2) / 2} y={ly} fontSize={FONT} fill={STROKE} textAnchor="middle" fontFamily="sans-serif">{label}</text>;
     dim = <line x1={x1} y1={dimY} x2={x2} y2={dimY} stroke={STROKE} strokeWidth={MED} markerStart="url(#dimArrowStart)" markerEnd="url(#dimArrowEnd)" />;
   } else {
@@ -44,7 +44,7 @@ function DimLine({ x1, y1, x2, y2, label, offset, side }) {
       </>
     );
     const my = (y1 + y2) / 2;
-    const lx = side === 'left' ? dimX - 2 : dimX + 2;
+    const lx = side === 'left' ? dimX - 9 : dimX + 9;
     labelEl = <text x={lx} y={my} fontSize={FONT} fill={STROKE} textAnchor="middle" fontFamily="sans-serif" transform={`rotate(-90 ${lx} ${my})`}>{label}</text>;
     dim = <line x1={dimX} y1={y1} x2={dimX} y2={y2} stroke={STROKE} strokeWidth={MED} markerStart="url(#dimArrowStart)" markerEnd="url(#dimArrowEnd)" />;
   }

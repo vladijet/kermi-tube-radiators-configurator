@@ -245,11 +245,9 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
     const hasVent = ventType === '1';
     if (ventSide === 'left' || ventSide === 'both') {
       if (hasVent) p.push(buildVent(hubLeftX - ecW - 11, ventY, true));
-      p.push(buildLMarker(hubLeftX - ecW - 26, topCy));
     }
     if (ventSide === 'right' || ventSide === 'both') {
       if (hasVent) p.push(buildVent(hubRightX + ecW, ventY, false));
-      p.push(buildLMarker(hubRightX + ecW + 26, topCy));
     }
   }
 
