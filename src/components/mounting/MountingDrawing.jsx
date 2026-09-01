@@ -254,15 +254,11 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
         width={(sideView.padL + T + sideView.padR) * scale} height={(sideView.padT + H + sideView.padB) * scale}
         viewBox={sideView.viewBox} preserveAspectRatio="xMidYMid meet"
         dangerouslySetInnerHTML={{ __html: sideView.inner }} />
-      {/* ===== KLK brackets — official assets (side view, mirrored to face the wall) ===== */}
-      <g transform={`translate(${wallRightX + SIDE_UP.w * scale} ${fuTop}) scale(-1 1)`}>
-        <svg x={0} y={0} width={SIDE_UP.w * scale} height={SIDE_UP.h * scale} viewBox={`0 0 ${SIDE_UP.w} ${SIDE_UP.h}`} preserveAspectRatio="none"
-          dangerouslySetInnerHTML={{ __html: sideUpInner(0) }} />
-      </g>
-      <g transform={`translate(${wallRightX + SIDE_DOWN.w * scale} ${fdBottom - SIDE_DOWN.h * scale}) scale(-1 1)`}>
-        <svg x={0} y={0} width={SIDE_DOWN.w * scale} height={SIDE_DOWN.h * scale} viewBox={`0 0 ${SIDE_DOWN.w} ${SIDE_DOWN.h}`} preserveAspectRatio="none"
-          dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
-      </g>
+      {/* ===== KLK brackets — official assets (side view, wall plate flush to the wall) ===== */}
+      <svg x={wallRightX} y={fuTop} width={SIDE_UP.w * scale} height={SIDE_UP.h * scale} viewBox={`0 0 ${SIDE_UP.w} ${SIDE_UP.h}`} preserveAspectRatio="none"
+        dangerouslySetInnerHTML={{ __html: sideUpInner(0) }} />
+      <svg x={wallRightX} y={fdBottom - SIDE_DOWN.h * scale} width={SIDE_DOWN.w * scale} height={SIDE_DOWN.h * scale} viewBox={`0 0 ${SIDE_DOWN.w} ${SIDE_DOWN.h}`} preserveAspectRatio="none"
+        dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
 
       {/* ===== side-view dimensions ===== */}
       <DimLine x1={radBackX} y1={bodyTopY} x2={radFrontX} y2={bodyTopY} label={`T = ${T}`} offset={DIM * 0.7} side="top" />
