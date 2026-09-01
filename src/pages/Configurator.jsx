@@ -521,7 +521,7 @@ export default function Configurator() {
             />
           </div>
           {selected && (
-            <div className="absolute top-3 right-4 z-20">
+            <div className="shrink-0 flex justify-center py-3">
               <MountingDiagramButton config={{
                 article,
                 series: radiatorType,

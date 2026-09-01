@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 // Opens the mounting scheme page in a new browser tab, carrying the current
 // radiator config as query params. Rendered as a borderless text link.
@@ -29,9 +29,9 @@ export default function MountingDiagramButton({ config }) {
       onClick={handleOpen}
       disabled={!config}
       className="flex items-center gap-1.5 bg-transparent text-[12px] font-semibold text-primary hover:text-primary/80 hover:underline underline-offset-4 transition-all disabled:opacity-50 disabled:no-underline"
-      title="Скачать схему монтажа"
+      title="Открыть схему монтажа"
     >
-      <Download className="w-4 h-4" />
+      <Eye className="w-4 h-4" />
       Схема монтажа
     </button>
   );
