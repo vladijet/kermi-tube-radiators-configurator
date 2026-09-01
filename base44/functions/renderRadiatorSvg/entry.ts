@@ -123,6 +123,10 @@ function buildEMarker(x, y) {
   return `<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#CCFF00" text-anchor="middle" dominant-baseline="central">E</text>`;
 }
 
+function buildLMarker(x, y) {
+  return `<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#CCFF00" text-anchor="middle" dominant-baseline="central">L</text>`;
+}
+
 // How far the tube's rounded cap protrudes beyond the manifold's outer edge
 const PROTR = 6;
 
@@ -245,6 +249,12 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
     if (ventSide === 'right' || ventSide === 'both') {
       if (hasVent) p.push(buildVent(hubRightX + ecW, ventY, false));
     }
+  }
+
+  // 3c1. Air-vent thread "L" marker — top manifold, on the ventSide (preview only).
+  if (!hideArrows && (ventSide === 'left' || ventSide === 'right' || ventSide === 'both')) {
+    if (ventSide === 'left' || ventSide === 'both') p.push(buildLMarker(hubLeftX - ecW - 26, topCy));
+    if (ventSide === 'right' || ventSide === 'both') p.push(buildLMarker(hubRightX + ecW + 26, topCy));
   }
 
   // 3d. Drain valve "E" marker — bottom manifold, same side as the vent/L marker.
