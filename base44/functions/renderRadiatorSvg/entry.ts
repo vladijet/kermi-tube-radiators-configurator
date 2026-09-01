@@ -119,6 +119,10 @@ function buildVent(tx, ty, mirror) {
     `</g>`;
 }
 
+function buildLMarker(x, y) {
+  return `<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#CCFF00" text-anchor="middle" dominant-baseline="central">L</text>`;
+}
+
 function buildEMarker(x, y) {
   return `<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#CCFF00" text-anchor="middle" dominant-baseline="central">E</text>`;
 }
