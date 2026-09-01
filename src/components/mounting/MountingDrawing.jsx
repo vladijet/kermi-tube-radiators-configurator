@@ -169,17 +169,18 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
   const nTop = bodyTopY + nOff * scale;
   const nBottom = bodyBottomY - nOff * scale;
 
-  // side view
+  // side view — wall on the RIGHT, radiator front faces left
   const sLeft = bodyRightX + DIM * 2.6 + 28;
   const wallThick = 14;
-  const wallX = sLeft;
-  const wallRightX = wallX + wallThick;
-  const radBackX = wallRightX + WALL_CLEARANCE_30 * scale;
-  const radFrontX = radBackX + T * scale;
-  const tubeCenterX = radBackX + (T / 2) * scale;
+  const radFrontX = sLeft;
+  const radBackX = radFrontX + T * scale;
+  const wallLeftX = radBackX + WALL_CLEARANCE_30 * scale;
+  const wallX = wallLeftX;
+  const wallRightX = wallLeftX + wallThick;
+  const tubeCenterX = radFrontX + (T / 2) * scale;
   const topScrewY = bodyTopY + OFFSET_35 * scale;
   const bottomScrewY = topScrewY + screwSpacing * scale;
-  const sRight = radFrontX + DIM * 2.6 + 10;
+  const sRight = wallRightX + DIM * 2.6 + 10;
 
   const kY = floorY + DIM * 0.9;
   const vbW = sRight + M;
@@ -246,26 +247,30 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       {/* ===== side view ===== */}
       <rect x={wallX} y={bodyTopY - 26} width={wallThick} height={floorY - (bodyTopY - 26) + 6} fill="#d1d1d1" />
       <rect x={wallX} y={bodyTopY - 26} width={wallThick} height={floorY - (bodyTopY - 26) + 6} fill="url(#wallHatch)" />
-      <line x1={wallRightX} y1={bodyTopY - 26} x2={wallRightX} y2={floorY + 6} stroke={STROKE} strokeWidth={THIN} />
-      <rect x={wallX} y={floorY} width={sFloorRight - wallX} height={5} fill="#e6e6e6" />
-      <rect x={wallX} y={floorY} width={sFloorRight - wallX} height={5} fill="url(#floorHatch)" />
-      <line x1={wallX} y1={floorY} x2={sFloorRight} y2={floorY} stroke={STROKE} strokeWidth={THIN} />
-      <svg x={radBackX - sideView.padL * scale} y={bodyTopY - sideView.padT * scale}
+      <line x1={wallX} y1={bodyTopY - 26} x2={wallX} y2={floorY + 6} stroke={STROKE} strokeWidth={THIN} />
+      <rect x={sLeft} y={floorY} width={sFloorRight - sLeft} height={5} fill="#e6e6e6" />
+      <rect x={sLeft} y={floorY} width={sFloorRight - sLeft} height={5} fill="url(#floorHatch)" />
+      <line x1={sLeft} y1={floorY} x2={sFloorRight} y2={floorY} stroke={STROKE} strokeWidth={THIN} />
+      <svg x={radFrontX - sideView.padL * scale} y={bodyTopY - sideView.padT * scale}
         width={(sideView.padL + T + sideView.padR) * scale} height={(sideView.padT + H + sideView.padB) * scale}
         viewBox={sideView.viewBox} preserveAspectRatio="xMidYMid meet"
         dangerouslySetInnerHTML={{ __html: sideView.inner }} />
-      {/* ===== KLK brackets — official assets (side view, wall plate flush to the wall) ===== */}
-      <svg x={wallRightX} y={fuTop} width={SIDE_UP.w * scale} height={SIDE_UP.h * scale} viewBox={`0 0 ${SIDE_UP.w} ${SIDE_UP.h}`} preserveAspectRatio="none"
-        dangerouslySetInnerHTML={{ __html: sideUpInner(0) }} />
-      <svg x={wallRightX} y={fdBottom - SIDE_DOWN.h * scale} width={SIDE_DOWN.w * scale} height={SIDE_DOWN.h * scale} viewBox={`0 0 ${SIDE_DOWN.w} ${SIDE_DOWN.h}`} preserveAspectRatio="none"
-        dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
+      {/* ===== KLK brackets — official assets (side view, wall plate flush to the wall on the right) ===== */}
+      <g transform={`translate(${wallLeftX} ${fuTop}) scale(-1 1)`}>
+        <svg x={0} y={0} width={SIDE_UP.w * scale} height={SIDE_UP.h * scale} viewBox={`0 0 ${SIDE_UP.w} ${SIDE_UP.h}`} preserveAspectRatio="none"
+          dangerouslySetInnerHTML={{ __html: sideUpInner(0) }} />
+      </g>
+      <g transform={`translate(${wallLeftX} ${fdBottom - SIDE_DOWN.h * scale}) scale(-1 1)`}>
+        <svg x={0} y={0} width={SIDE_DOWN.w * scale} height={SIDE_DOWN.h * scale} viewBox={`0 0 ${SIDE_DOWN.w} ${SIDE_DOWN.h}`} preserveAspectRatio="none"
+          dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
+      </g>
 
       {/* ===== side-view dimensions ===== */}
-      <DimLine x1={radBackX} y1={bodyTopY} x2={radFrontX} y2={bodyTopY} label={`T = ${T}`} offset={DIM * 0.7} side="top" />
-      <DimLine x1={wallRightX} y1={bodyTopY} x2={tubeCenterX} y2={bodyTopY} label={`D = ${D}`} offset={DIM * 1.9} side="top" />
-      <DimLine x1={wallRightX} y1={floorY} x2={radBackX} y2={floorY} label="30" offset={DIM * 0.7} side="bottom" />
-      <DimLine x1={radFrontX} y1={topScrewY} x2={radFrontX} y2={bottomScrewY} label={`${screwSpacing}`} offset={DIM} side="right" />
-      <DimLine x1={radFrontX} y1={topScrewY} x2={radFrontX} y2={floorY} label={`C = ${C}`} offset={DIM * 2.3} side="right" />
+      <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`T = ${T}`} offset={DIM * 0.7} side="top" />
+      <DimLine x1={wallLeftX} y1={bodyTopY} x2={tubeCenterX} y2={bodyTopY} label={`D = ${D}`} offset={DIM * 1.9} side="top" />
+      <DimLine x1={radBackX} y1={floorY} x2={wallLeftX} y2={floorY} label="30" offset={DIM * 0.7} side="bottom" />
+      <DimLine x1={radBackX} y1={topScrewY} x2={radBackX} y2={bottomScrewY} label={`${screwSpacing}`} offset={DIM} side="left" />
+      <DimLine x1={radBackX} y1={topScrewY} x2={radBackX} y2={floorY} label={`C = ${C}`} offset={DIM * 2.3} side="left" />
     </svg>
   );
 }
