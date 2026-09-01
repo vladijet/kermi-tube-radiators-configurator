@@ -221,7 +221,7 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
         <g key={`b${i}`}>
           <svg x={cx - fuW / 2} y={fuTop} width={fuW} height={fuH} viewBox={`0 0 ${FRONT_UP.w} ${FRONT_UP.h}`} preserveAspectRatio="none"
             dangerouslySetInnerHTML={{ __html: frontUpInner(i) }} />
-          <svg x={cx - fdW / 2} y={fdBottom - fdH} width={fdW} height={fdH} viewBox={`0 0 ${FRONT_DOWN.w} ${FRONT_DOWN.h}`} preserveAspectRatio="none"
+          <svg x={cx - 10 * scale} y={fdBottom - fdH} width={fdW} height={fdH} viewBox={`0 0 ${FRONT_DOWN.w} ${FRONT_DOWN.h}`} preserveAspectRatio="none"
             dangerouslySetInnerHTML={{ __html: frontDownInner(i) }} />
         </g>
       ))}
