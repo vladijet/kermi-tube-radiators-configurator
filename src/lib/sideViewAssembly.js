@@ -113,6 +113,9 @@ export function buildSideViewSvg({ tubes, height, color, connectionCode, valveTy
 </linearGradient>
 </defs>`);
 
+  // ---- Layer 0: solid body fill (fills gaps between tubes so the side view looks solid) ----
+  parts.push(`<rect x="0" y="0" width="${T}" height="${H}" rx="${MANIFOLD_R}" fill="${manifoldSolid}"/>`);
+
   // ---- Layer 1: manifold caps (solid, with tube cutouts) ----
   parts.push(`<path d="${capPath}" fill="${manifoldSolid}"/>`);
   parts.push(`<path d="${capPath}" fill="${manifoldSolid}" transform="matrix(1 0 0 -1 0 ${H})"/>`);
