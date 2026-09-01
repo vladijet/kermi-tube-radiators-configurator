@@ -119,10 +119,6 @@ function buildVent(tx, ty, mirror) {
     `</g>`;
 }
 
-function buildLMarker(x, y) {
-  return `<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#CCFF00" text-anchor="middle" dominant-baseline="central">L</text>`;
-}
-
 function buildEMarker(x, y) {
   return `<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#CCFF00" text-anchor="middle" dominant-baseline="central">E</text>`;
 }
@@ -237,9 +233,9 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
     p.push(buildEl6(el6Tx, el6Ty, accent, base, outline, mirror));
   }
 
-  // 3c. Air vent (mv_l/mv_r) + "L" marker — on the top manifold end cap;
+  // 3c. Air vent (mv_l/mv_r) — on the top manifold end cap;
   // right for N12/N14/N68, left for N34/N32/N86, both for RRV N69 ТВН & N89 ТВН.
-  // Vent visual only when ventType === '1'; "L" marker always shown at the vent/plug position.
+  // Vent visual only when ventType === '1'.
   if (ventSide === 'left' || ventSide === 'right' || ventSide === 'both') {
     const ventY = topCy - 11;
     const hasVent = ventType === '1';

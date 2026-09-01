@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { SECTION_LENGTH } from '@/lib/radiatorData';
 import { OFFSET_35, BRACKET_WIDTH_45, WALL_CLEARANCE_30 } from '@/lib/mountingGeometry';
 import { buildSideViewSvg } from '@/lib/sideViewAssembly';
+import { FRONT_UP, FRONT_DOWN, SIDE_UP, SIDE_DOWN, frontUpInner, frontDownInner, sideUpInner, sideDownInner } from '@/lib/klkBracketAssets';
 
 // Mounting scheme built ON TOP of the ready server render (renderRadiatorSvg).
 // The radiator itself is NOT redrawn — the server SVG is embedded as-is (compact
@@ -157,9 +158,11 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
   const bracketCenters = bracketPositions.map((p) => bodyLeftX + (p - 0.5) * SECTION_LENGTH * scale);
   const firstBx = bracketCenters[0];
   const lastBx = bracketCenters[bracketCenters.length - 1];
-  const bracketTop = bodyTopY + 6 * scale;
-  const bracketH = bodyH - 12 * scale;
   const bw = BRACKET_WIDTH_45 * scale;
+  const fuW = FRONT_UP.w * scale, fuH = FRONT_UP.h * scale;
+  const fdW = FRONT_DOWN.w * scale, fdH = FRONT_DOWN.h * scale;
+  const fuTop = bodyTopY + OFFSET_35 * scale;        // upper bracket 35 mm below radiator top
+  const fdBottom = bodyBottomY - OFFSET_35 * scale;  // lower bracket 35 mm above radiator bottom
 
   const nOff = (H - N) / 2;
   const nTop = bodyTopY + nOff * scale;
@@ -211,14 +214,13 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       <rect x={fLeft} y={floorY} width={fRight - fLeft} height={5} fill="url(#floorHatch)" />
       <line x1={fLeft} y1={floorY} x2={fRight} y2={floorY} stroke={STROKE} strokeWidth={THIN} />
 
-      {/* ===== KLK brackets (overlay on the server render) ===== */}
+      {/* ===== KLK brackets — official assets (front view) ===== */}
       {bracketCenters.map((cx, i) => (
         <g key={`b${i}`}>
-          <rect x={cx - bw / 2} y={bracketTop} width={bw} height={bracketH} rx={3} fill="#c0c4cc" stroke="#7a7a7a" strokeWidth={THIN} />
-          <rect x={cx - bw / 2} y={bracketTop} width={bw} height={bracketH * 0.13} fill="#a8acb3" />
-          <rect x={cx - bw / 2} y={bracketTop + bracketH * 0.87} width={bw} height={bracketH * 0.13} fill="#a8acb3" />
-          <circle cx={cx} cy={bracketTop + bracketH * 0.12} r={2.2} fill="#555" />
-          <circle cx={cx} cy={bracketTop + bracketH * 0.88} r={2.2} fill="#555" />
+          <svg x={cx - fuW / 2} y={fuTop} width={fuW} height={fuH} viewBox={`0 0 ${FRONT_UP.w} ${FRONT_UP.h}`} preserveAspectRatio="none"
+            dangerouslySetInnerHTML={{ __html: frontUpInner(i) }} />
+          <svg x={cx - fdW / 2} y={fdBottom - fdH} width={fdW} height={fdH} viewBox={`0 0 ${FRONT_DOWN.w} ${FRONT_DOWN.h}`} preserveAspectRatio="none"
+            dangerouslySetInnerHTML={{ __html: frontDownInner(i) }} />
         </g>
       ))}
 
@@ -231,7 +233,13 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
         <DimLine x1={firstBx} y1={kY} x2={lastBx} y2={kY} label={`K = ${K}`} offset={DIM * 0.9} side="bottom" />
       )}
       {bracketCenters.length >= 1 && (
-        <DimLine x1={firstBx - bw / 2} y1={bracketTop} x2={firstBx + bw / 2} y2={bracketTop} label="45" offset={DIM * 0.5} side="top" />
+        <DimLine x1={firstBx - bw / 2} y1={fuTop} x2={firstBx + bw / 2} y2={fuTop} label="45" offset={DIM * 0.5} side="top" />
+      )}
+      {bracketCenters.length >= 1 && (
+        <DimLine x1={firstBx} y1={bodyTopY} x2={firstBx} y2={fuTop} label="35" offset={DIM * 0.55} side="left" />
+      )}
+      {bracketCenters.length >= 1 && (
+        <DimLine x1={firstBx} y1={fdBottom} x2={firstBx} y2={bodyBottomY} label="35" offset={DIM * 0.55} side="left" />
       )}
 
       {/* ===== side view ===== */}
@@ -245,6 +253,11 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
         width={(sideView.padL + T + sideView.padR) * scale} height={(sideView.padT + H + sideView.padB) * scale}
         viewBox={sideView.viewBox} preserveAspectRatio="xMidYMid meet"
         dangerouslySetInnerHTML={{ __html: sideView.inner }} />
+      {/* ===== KLK brackets — official assets (side view) ===== */}
+      <svg x={wallRightX} y={fuTop} width={SIDE_UP.w * scale} height={SIDE_UP.h * scale} viewBox={`0 0 ${SIDE_UP.w} ${SIDE_UP.h}`} preserveAspectRatio="none"
+        dangerouslySetInnerHTML={{ __html: sideUpInner(0) }} />
+      <svg x={wallRightX} y={fdBottom - SIDE_DOWN.h * scale} width={SIDE_DOWN.w * scale} height={SIDE_DOWN.h * scale} viewBox={`0 0 ${SIDE_DOWN.w} ${SIDE_DOWN.h}`} preserveAspectRatio="none"
+        dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
 
       {/* ===== side-view dimensions ===== */}
       <DimLine x1={radBackX} y1={bodyTopY} x2={radFrontX} y2={bodyTopY} label={`T = ${T}`} offset={DIM * 0.7} side="top" />
