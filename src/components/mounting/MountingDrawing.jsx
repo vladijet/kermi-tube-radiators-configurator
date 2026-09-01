@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { SECTION_LENGTH } from '@/lib/radiatorData';
 import { OFFSET_35, BRACKET_WIDTH_45, WALL_CLEARANCE_30 } from '@/lib/mountingGeometry';
+import { buildSideViewSvg } from '@/lib/sideViewAssembly';
 
 // Mounting scheme built ON TOP of the ready server render (renderRadiatorSvg).
 // The radiator itself is NOT redrawn — the server SVG is embedded as-is (compact
@@ -76,6 +77,22 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
   const [inner, setInner] = useState('');
   const [viewBox, setViewBox] = useState('');
   const [loading, setLoading] = useState(true);
+
+  // Side-view radiator body: assembled synchronously from the official layer rules,
+  // recoloured to the selected RAL colour, with connection hardware. No loading delay.
+  const sideView = useMemo(() => {
+    const tubes = Math.round((T - 25) / 40) + 1;
+    return buildSideViewSvg({
+      tubes,
+      height: H,
+      color: color || '#F4F4F4',
+      connectionCode: connectionCode || 'N12',
+      valveType: valveType || '',
+      ventSide: computeVentSide(connectionCode, valveType),
+      ventType: ventType || '',
+      drainValve: drainValve || false,
+    });
+  }, [T, H, color, connectionCode, valveType, ventType, drainValve]);
 
   useEffect(() => {
     let cancelled = false;
@@ -228,7 +245,10 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       <line x1={wallRightX - 4} y1={topScrewY} x2={wallRightX + 4} y2={topScrewY} stroke="#333" strokeWidth={0.8} />
       <circle cx={wallRightX} cy={bottomScrewY} r={2.4} fill="#555" />
       <line x1={wallRightX - 4} y1={bottomScrewY} x2={wallRightX + 4} y2={bottomScrewY} stroke="#333" strokeWidth={0.8} />
-      <rect x={radBackX} y={bodyTopY} width={T * scale} height={bodyH} fill={color || '#F4F4F4'} stroke="#9ca3af" strokeWidth={THIN} />
+      <svg x={radBackX - sideView.padL * scale} y={bodyTopY - sideView.padT * scale}
+        width={(sideView.padL + T + sideView.padR) * scale} height={(sideView.padT + H + sideView.padB) * scale}
+        viewBox={sideView.viewBox} preserveAspectRatio="xMidYMid meet"
+        dangerouslySetInnerHTML={{ __html: sideView.inner }} />
 
       {/* ===== side-view dimensions ===== */}
       <DimLine x1={radBackX} y1={bodyTopY} x2={radFrontX} y2={bodyTopY} label={`T = ${T}`} offset={DIM * 0.7} side="top" />
