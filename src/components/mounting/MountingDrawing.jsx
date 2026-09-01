@@ -263,10 +263,10 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
 
       {/* ===== side-view dimensions ===== */}
       <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`T = ${T}`} offset={DIM * 0.7} side="top" />
-      <DimLine x1={wallLeftX} y1={bodyTopY} x2={tubeCenterX} y2={bodyTopY} label={`D = ${D}`} offset={DIM * 1.9} side="top" />
-      <DimLine x1={radBackX} y1={floorY} x2={wallLeftX} y2={floorY} label="30" offset={DIM * 0.7} side="bottom" />
-      <DimLine x1={radBackX} y1={topScrewY} x2={radBackX} y2={bottomScrewY} label={`${screwSpacing}`} offset={DIM} side="left" />
-      <DimLine x1={radBackX} y1={topScrewY} x2={radBackX} y2={floorY} label={`C = ${C}`} offset={DIM * 2.3} side="left" />
+      <DimLine x1={radBackX} y1={(topScrewY + bottomScrewY) / 2} x2={wallLeftX} y2={(topScrewY + bottomScrewY) / 2} label="30 мм." offset={DIM * 0.4} side="top" />
+      <DimLine x1={tubeCenterX} y1={bodyBottomY} x2={wallLeftX} y2={bodyBottomY} label={`D = ${D}`} offset={DIM * 0.5} side="bottom" />
+      <DimLine x1={wallLeftX} y1={topScrewY} x2={wallLeftX} y2={bottomScrewY} label={`${screwSpacing}`} offset={DIM} side="right" />
+      <DimLine x1={wallLeftX} y1={topScrewY} x2={wallLeftX} y2={floorY} label={`C = ${C}`} offset={DIM * 2.3} side="right" />
     </svg>
   );
 }
