@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { getRalColor } from '@/lib/ralColors';
 import { getMountingDimensions } from '@/lib/mountingGeometry';
 import MountingDrawing from '@/components/mounting/MountingDrawing';
-import { Printer, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 export default function MountingScheme() {
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
@@ -29,10 +29,12 @@ export default function MountingScheme() {
     <div className="min-h-screen bg-white flex flex-col items-center px-4 py-8 print:py-2 print:px-0">
       <div className="w-full max-w-[1100px] flex flex-col items-center">
         <div className="w-full text-center mb-4 print:mb-2">
-          <div className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wide">Артикул</div>
-          <h1 className="text-[20px] sm:text-[24px] font-bold text-neutral-900 break-all leading-tight mt-1">
-            {article || '—'}
+          <h1 className="text-[20px] sm:text-[24px] font-bold text-neutral-900 uppercase tracking-wide">
+            Схема монтажа радиатора
           </h1>
+          <div className="text-[10px] sm:text-[12px] font-medium text-neutral-500 break-all leading-tight mt-1.5">
+            {article || '—'}
+          </div>
         </div>
 
         <div className="w-full flex-1 flex items-center justify-center min-h-[50vh]">
@@ -58,10 +60,6 @@ export default function MountingScheme() {
           )}
         </div>
 
-        <div className="no-print mt-4 flex items-center gap-2 text-neutral-400 text-xs">
-          <Printer className="w-4 h-4" />
-          <span>Для печати используйте Ctrl + P (ориентация — альбомная)</span>
-        </div>
       </div>
     </div>
   );
