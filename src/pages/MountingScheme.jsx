@@ -48,6 +48,7 @@ export default function MountingScheme() {
               color={color}
               ventType={ventType}
               drainValve={drainValve}
+              series={series}
             />
           ) : (
             <div className="flex flex-col items-center gap-3 text-center max-w-md">

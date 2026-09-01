@@ -14,8 +14,8 @@ const TUBE_W = 25;
 const PITCH = 40;          // T = 25 + (N-1)*40
 const MANIFOLD_H = 87;     // manifold bar height
 const MANIFOLD_R = 20;     // manifold corner radius
-const NOTCH_TOP = 69;      // notch depth from the bar's inner edge
-const NOTCH_CR = 2.24;     // notch corner radius
+const NOTCH_TOP = 68.95;     // notch depth from the bar's inner edge (official Kermi cap)
+const NOTCH_CR = 5;         // notch corner radius (official Kermi cap — soft, no "ears")
 
 // Padding around the (0,0)-(T,H) body so caps / hardware are not clipped.
 const PAD_L = 50;
@@ -79,7 +79,7 @@ function airVent(cx, topY, fill, outline) {
  * Build the side-view radiator SVG (layered, official assets, recoloured to RAL).
  * @returns {{svg,inner,viewBox,padL,padT,padR,padB,T,H}}
  */
-export function buildSideViewSvg({ tubes, height, color, connectionCode, valveType, ventSide, ventType, drainValve }) {
+export function buildSideViewSvg({ tubes, height, color, connectionCode, valveType, ventSide, ventType, drainValve, series }) {
   const N = Math.max(2, Math.min(6, Number(tubes) || 3));
   const H = Math.max(180, Number(height) || 600);
   const T = TUBE_W + (N - 1) * PITCH;
@@ -146,7 +146,8 @@ export function buildSideViewSvg({ tubes, height, color, connectionCode, valveTy
     const n2 = blockX + BLOCK_W - 9 - STUB_W;
     parts.push(pipeStub(n1, H + BLOCK_H, STUB_W, STUB_LEN, pipeFill, outline));
     parts.push(pipeStub(n2, H + BLOCK_H, STUB_W, STUB_LEN, pipeFill, outline));
-    if (['69', '89', '96', '98'].includes(cc) && (valveType === 'ТВВ' || valveType === 'ТВН')) {
+    const isRRV = String(series || '').toUpperCase() === 'RRV';
+    if (['69', '89', '96', '98'].includes(cc) && (valveType === 'ТВВ' || (valveType === 'ТВН' && !isRRV))) {
       const vy = valveType === 'ТВВ' ? topManCy : botManCy;
       parts.push(valveBody(blockX + BLOCK_W / 2, vy, s[9], outline));
     }

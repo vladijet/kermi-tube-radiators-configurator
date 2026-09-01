@@ -8,11 +8,11 @@ import { buildSideViewSvg } from '@/lib/sideViewAssembly';
 // The radiator itself is NOT redrawn — the server SVG is embedded as-is (compact
 // mode, no flow arrows) and only dimension lines + side view are drawn around it.
 
-const STROKE = '#374151';
+const STROKE = '#5B5B5B';
 const THIN = 0.8;
 const MED = 1.2;
 const FONT = 11;
-const DIM = 18; // base offset of a dimension line from the object
+const DIM = 32; // base offset of a dimension line from the object (~1.8× for clearance)
 const EXT = 6;  // extension-line overshoot
 
 // Dimension line: (x1,y1)-(x2,y2) are the measured object edges; the dim line is
@@ -72,7 +72,7 @@ function computeVentSide(connectionCode, valveType) {
   return ['12', '14', '68'].includes(num) ? 'right' : 'left';
 }
 
-export default function MountingDrawing({ dims, sections, height, connectionCode, valveType, color, ventType, drainValve }) {
+export default function MountingDrawing({ dims, sections, height, connectionCode, valveType, color, ventType, drainValve, series }) {
   const { H, B, T, N, K, A, C, D, bracketPositions, screwSpacing } = dims;
   const [inner, setInner] = useState('');
   const [viewBox, setViewBox] = useState('');
@@ -91,8 +91,9 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       ventSide: computeVentSide(connectionCode, valveType),
       ventType: ventType || '',
       drainValve: drainValve || false,
+      series: series || '',
     });
-  }, [T, H, color, connectionCode, valveType, ventType, drainValve]);
+  }, [T, H, color, connectionCode, valveType, ventType, drainValve, series]);
 
   useEffect(() => {
     let cancelled = false;
@@ -187,11 +188,11 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
   return (
     <svg viewBox={`0 0 ${vbW} ${vbH}`} width="100%" style={{ maxHeight: '86vh' }} fontFamily="sans-serif">
       <defs>
-        <marker id="dimArrowEnd" markerUnits="userSpaceOnUse" markerWidth={9} markerHeight={9} refX={4.5} refY={4.5} orient="auto">
-          <path d="M0,0 L9,4.5 L0,9 z" fill={STROKE} />
+        <marker id="dimArrowEnd" markerUnits="userSpaceOnUse" markerWidth={11} markerHeight={4.5} refX={22.5381} refY={4.40682} orient="auto" viewBox="0 0 23 9">
+          <path d="M22.5381 4.40682 L0 -0.000615151 L0 8.81426 Z" fill={STROKE} />
         </marker>
-        <marker id="dimArrowStart" markerUnits="userSpaceOnUse" markerWidth={9} markerHeight={9} refX={4.5} refY={4.5} orient="auto">
-          <path d="M9,0 L0,4.5 L9,9 z" fill={STROKE} />
+        <marker id="dimArrowStart" markerUnits="userSpaceOnUse" markerWidth={11} markerHeight={4.5} refX={0} refY={4.40682} orient="auto" viewBox="0 0 23 9">
+          <path d="M-2.22459e-07 4.40682 L22.5381 -0.000615151 L22.5381 8.81426 Z" fill={STROKE} />
         </marker>
         <pattern id="wallHatch" patternUnits="userSpaceOnUse" width={6} height={6} patternTransform="rotate(45)">
           <line x1="0" y1="0" x2="0" y2={6} stroke="#9ca3af" strokeWidth={0.9} />
@@ -240,11 +241,6 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       <rect x={wallX} y={floorY} width={sFloorRight - wallX} height={5} fill="#e6e6e6" />
       <rect x={wallX} y={floorY} width={sFloorRight - wallX} height={5} fill="url(#floorHatch)" />
       <line x1={wallX} y1={floorY} x2={sFloorRight} y2={floorY} stroke={STROKE} strokeWidth={THIN} />
-      <rect x={wallRightX} y={bracketTop} width={10 * scale} height={bracketH} rx={2} fill="#c0c4cc" stroke="#7a7a7a" strokeWidth={THIN} />
-      <circle cx={wallRightX} cy={topScrewY} r={2.4} fill="#555" />
-      <line x1={wallRightX - 4} y1={topScrewY} x2={wallRightX + 4} y2={topScrewY} stroke="#333" strokeWidth={0.8} />
-      <circle cx={wallRightX} cy={bottomScrewY} r={2.4} fill="#555" />
-      <line x1={wallRightX - 4} y1={bottomScrewY} x2={wallRightX + 4} y2={bottomScrewY} stroke="#333" strokeWidth={0.8} />
       <svg x={radBackX - sideView.padL * scale} y={bodyTopY - sideView.padT * scale}
         width={(sideView.padL + T + sideView.padR) * scale} height={(sideView.padT + H + sideView.padB) * scale}
         viewBox={sideView.viewBox} preserveAspectRatio="xMidYMid meet"
