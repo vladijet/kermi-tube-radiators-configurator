@@ -161,8 +161,9 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
   const bw = BRACKET_WIDTH_45 * scale;
   const fuW = FRONT_UP.w * scale, fuH = FRONT_UP.h * scale;
   const fdW = FRONT_DOWN.w * scale, fdH = FRONT_DOWN.h * scale;
-  const fuTop = bodyTopY + OFFSET_35 * scale;        // upper bracket 35 mm below radiator top
-  const fdBottom = bodyBottomY - OFFSET_35 * scale;  // lower bracket 35 mm above radiator bottom
+  const fuTop = bodyTopY + (55 - 13.664) * scale;  // upper bracket top so its top screw hole is 55 mm below radiator top
+  const fuHoleY = bodyTopY + 55 * scale;            // upper bracket top screw hole centre
+  const fdBottom = bodyBottomY - 100 * scale;       // lower support 100 mm above radiator bottom
 
   const nOff = (H - N) / 2;
   const nTop = bodyTopY + nOff * scale;
@@ -236,10 +237,10 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
         <DimLine x1={firstBx - bw / 2} y1={fuTop} x2={firstBx + bw / 2} y2={fuTop} label="45" offset={DIM * 0.5} side="top" />
       )}
       {bracketCenters.length >= 1 && (
-        <DimLine x1={firstBx} y1={bodyTopY} x2={firstBx} y2={fuTop} label="35" offset={DIM * 0.55} side="left" />
+        <DimLine x1={firstBx} y1={bodyTopY} x2={firstBx} y2={fuHoleY} label="55" offset={DIM * 0.55} side="left" />
       )}
       {bracketCenters.length >= 1 && (
-        <DimLine x1={firstBx} y1={fdBottom} x2={firstBx} y2={bodyBottomY} label="35" offset={DIM * 0.55} side="left" />
+        <DimLine x1={firstBx} y1={fdBottom} x2={firstBx} y2={bodyBottomY} label="100" offset={DIM * 0.55} side="left" />
       )}
 
       {/* ===== side view ===== */}
