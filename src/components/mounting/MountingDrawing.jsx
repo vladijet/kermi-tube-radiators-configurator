@@ -263,9 +263,9 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
 
       {/* ===== side-view dimensions ===== */}
       <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`${T}`} offset={DIM * 0.7} side="top" />
-      <DimLine x1={radBackX} y1={(topScrewY + bottomScrewY) / 2} x2={wallLeftX} y2={(topScrewY + bottomScrewY) / 2} label="30" offset={DIM * 0.4} side="top" />
+      <DimLine x1={radBackX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label="30" offset={DIM * 0.7} side="top" />
       <DimLine x1={tubeCenterX} y1={bodyBottomY} x2={wallLeftX} y2={bodyBottomY} label={`${D}`} offset={DIM * 0.5} side="bottom" />
-      <DimLine x1={wallLeftX} y1={topScrewY} x2={wallLeftX} y2={bottomScrewY} label={`${screwSpacing}`} offset={DIM} side="right" />
+      <DimLine x1={wallLeftX} y1={fuHoleY} x2={wallLeftX} y2={fuHoleY + screwSpacing * scale} label={`${screwSpacing}`} offset={DIM} side="right" />
       <DimLine x1={wallLeftX} y1={topScrewY} x2={wallLeftX} y2={floorY} label={`${C}`} offset={DIM * 2.3} side="right" />
     </svg>
   );
