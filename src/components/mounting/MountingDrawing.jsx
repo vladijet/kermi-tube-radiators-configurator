@@ -108,7 +108,12 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
 
   if (!H || !B) return null;
   if (loading) {
-    return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-4 border-neutral-200 border-t-neutral-700 rounded-full animate-spin" /></div>;
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-24">
+        <div className="w-10 h-10 border-4 border-neutral-200 border-t-neutral-700 rounded-full animate-spin" />
+        <div className="text-[14px] font-semibold text-neutral-500 uppercase tracking-wide">Загрузка схемы монтажа</div>
+      </div>
+    );
   }
   if (!inner || !viewBox) {
     return <div className="text-neutral-400 text-sm text-center py-20">Рендер недоступен</div>;
