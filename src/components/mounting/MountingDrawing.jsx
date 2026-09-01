@@ -31,12 +31,8 @@ function DimLine({ x1, y1, x2, y2, label, offset, side }) {
         <line x1={x2} y1={y2} x2={x2} y2={dimY + over} stroke={STROKE} strokeWidth={THIN} />
       </>
     );
-    const w = String(label).length * FONT * 0.62 + 6;
     labelEl = (
-      <>
-        <rect x={(x1 + x2) / 2 - w / 2} y={dimY - (FONT + 2) / 2} width={w} height={FONT + 2} fill="white" />
-        <text x={(x1 + x2) / 2} y={dimY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
-      </>
+      <text x={(x1 + x2) / 2} y={dimY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
     );
     dim = <line x1={x1} y1={dimY} x2={x2} y2={dimY} stroke={STROKE} strokeWidth={MED} markerStart="url(#dimArrowStart)" markerEnd="url(#dimArrowEnd)" />;
   } else {
@@ -50,12 +46,8 @@ function DimLine({ x1, y1, x2, y2, label, offset, side }) {
       </>
     );
     const my = (y1 + y2) / 2;
-    const w = String(label).length * FONT * 0.62 + 6;
     labelEl = (
-      <>
-        <rect x={dimX - (FONT + 2) / 2} y={my - w / 2} width={FONT + 2} height={w} fill="white" />
-        <text x={dimX} y={my} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif" transform={`rotate(-90 ${dimX} ${my})`}>{label}</text>
-      </>
+      <text x={dimX} y={my} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif" transform={`rotate(-90 ${dimX} ${my})`}>{label}</text>
     );
     dim = <line x1={dimX} y1={y1} x2={dimX} y2={y2} stroke={STROKE} strokeWidth={MED} markerStart="url(#dimArrowStart)" markerEnd="url(#dimArrowEnd)" />;
   }
