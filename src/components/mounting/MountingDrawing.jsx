@@ -18,7 +18,7 @@ const EXT = 6;  // extension-line overshoot
 
 // Dimension line: (x1,y1)-(x2,y2) are the measured object edges; the dim line is
 // drawn parallel to them, shifted outward by `offset` on `side` ('top'|'bottom'|'left'|'right').
-function DimLine({ x1, y1, x2, y2, label, offset, side, tight }) {
+function DimLine({ x1, y1, x2, y2, label, offset, side, tight, tightDir = 'right' }) {
   const horiz = Math.abs(x2 - x1) >= Math.abs(y2 - y1);
   let exts, dim, labelEl;
   if (horiz) {
@@ -32,16 +32,24 @@ function DimLine({ x1, y1, x2, y2, label, offset, side, tight }) {
       </>
     );
     if (tight) {
-      // Tight-space rule: drop the left (inner) arrow, extend the line to the
-      // right as a leader, keep a single arrow pointing inward at the end of
-      // the leader, and place the value above the extended line.
+      // Tight-space rule: drop the inner arrow, extend the line outward as a
+      // leader, keep a single arrow pointing inward at the leader end, and
+      // place the value above the extended line.
       const leader = FONT * 1.6;
-      const endX = x2 + leader;
       const labelY = dimY + (side === 'top' ? -FONT * 0.7 : FONT * 0.7);
-      labelEl = (
-        <text x={(x2 + endX) / 2} y={labelY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
-      );
-      dim = <line x1={x1} y1={dimY} x2={endX} y2={dimY} stroke={STROKE} strokeWidth={MED} markerEnd="url(#dimArrowEnd)" />;
+      if (tightDir === 'left') {
+        const startX = x1 - leader;
+        labelEl = (
+          <text x={(x1 + startX) / 2} y={labelY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
+        );
+        dim = <line x1={startX} y1={dimY} x2={x2} y2={dimY} stroke={STROKE} strokeWidth={MED} markerStart="url(#dimArrowStart)" />;
+      } else {
+        const endX = x2 + leader;
+        labelEl = (
+          <text x={(x2 + endX) / 2} y={labelY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
+        );
+        dim = <line x1={x1} y1={dimY} x2={endX} y2={dimY} stroke={STROKE} strokeWidth={MED} markerEnd="url(#dimArrowEnd)" />;
+      }
     } else {
       const labelY = dimY + (side === 'top' ? -FONT * 0.7 : FONT * 0.7);
       labelEl = (
@@ -248,7 +256,7 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       {/* Level 1 (outermost): total width = body + both end caps */}
       <DimLine x1={bodyLeftX - OFFSET_12 * scale} y1={bodyTopY} x2={bodyRightX + OFFSET_12 * scale} y2={bodyTopY} label={`${B + 2 * OFFSET_12}`} offset={DIM} side="top" />
       {/* Level 2 (middle): left end cap + body width + right end cap */}
-      <DimLine x1={bodyLeftX - OFFSET_12 * scale} y1={bodyTopY} x2={bodyLeftX} y2={bodyTopY} label="12" offset={DIM * 0.7} side="top" tight />
+      <DimLine x1={bodyLeftX - OFFSET_12 * scale} y1={bodyTopY} x2={bodyLeftX} y2={bodyTopY} label="12" offset={DIM * 0.7} side="top" tight tightDir="left" />
       <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyRightX} y2={bodyTopY} label={`${B}`} offset={DIM * 0.7} side="top" />
       <DimLine x1={bodyRightX} y1={bodyTopY} x2={bodyRightX + OFFSET_12 * scale} y2={bodyTopY} label="12" offset={DIM * 0.7} side="top" tight />
       {/* Level 3 (innermost): K bracket spacing */}
@@ -294,7 +302,7 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       <DimLine x1={radFrontX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label={`${T + WALL_CLEARANCE_30}`} offset={DIM} side="top" />
       {/* Level 2 (middle): depth + wall gap, aligned with front 810 */}
       <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`${T}`} offset={DIM * 0.7} side="top" />
-      <DimLine x1={radBackX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label="30" offset={DIM * 0.7} side="top" />
+      <DimLine x1={radBackX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label="30" offset={DIM * 0.7} side="top" tight />
       <DimLine x1={tubeCenterX} y1={bodyBottomY} x2={wallLeftX} y2={bodyBottomY} label={`${D}`} offset={DIM * 0.5} side="bottom" />
       <DimLine x1={wallLeftX} y1={fuHoleY} x2={wallLeftX} y2={fuHoleY + screwSpacing * scale} label={`${screwSpacing}`} offset={DIM} side="right" />
       <DimLine x1={wallLeftX} y1={fuHoleY} x2={wallLeftX} y2={floorY} label={`${C}`} offset={DIM * 2.3} side="right" />
