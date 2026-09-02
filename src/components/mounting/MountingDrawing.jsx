@@ -270,12 +270,12 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       {bracketCenters.length >= 2 && (
         <DimLine x1={firstBx} y1={bodyTopY} x2={lastBx} y2={bodyTopY} label={`${K}`} offset={DIM * 0.45} side="top" />
       )}
-      {/* Left: H (body height) */}
-      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyLeftX} y2={bodyBottomY} label={`${H}`} offset={DIM} side="left" />
-      {/* Left outer: N (interaxis) moved from right to left */}
-      <DimLine x1={bodyLeftX} y1={nTop} x2={bodyLeftX} y2={nBottom} label={`${N}`} offset={DIM * 1.9} side="left" />
-      {/* Left bottom: A (floor clearance) moved from right to left */}
-      <DimLine x1={bodyLeftX} y1={bodyBottomY} x2={bodyLeftX} y2={floorY} label={`${A}`} offset={DIM} side="left" />
+      {/* Left outer: H (body height) */}
+      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyLeftX} y2={bodyBottomY} label={`${H}`} offset={DIM * 1.9} side="left" />
+      {/* Left: N (interaxis) closer to radiator */}
+      <DimLine x1={bodyLeftX} y1={nTop} x2={bodyLeftX} y2={nBottom} label={`${N}`} offset={DIM} side="left" />
+      {/* Left outer: A (floor clearance) */}
+      <DimLine x1={bodyLeftX} y1={bodyBottomY} x2={bodyLeftX} y2={floorY} label={`${A}`} offset={DIM * 1.9} side="left" />
       {/* Bracket details unchanged */}
       {bracketCenters.length >= 1 && (
         <DimLine x1={firstBx - bw / 2} y1={fuTop} x2={firstBx + bw / 2} y2={fuTop} label="45" offset={DIM * 0.5} side="top" />
