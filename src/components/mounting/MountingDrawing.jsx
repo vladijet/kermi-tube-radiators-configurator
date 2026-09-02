@@ -45,16 +45,16 @@ function DimLine({ x1, y1, x2, y2, label, offset, side, tight, tightDir = 'right
           <text x={(x1 + startX) / 2} y={labelY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
         );
         line = <line x1={startX} y1={dimY} x2={x2} y2={dimY} stroke={STROKE} strokeWidth={MED} />;
-        // tip at startX pointing right (inward)
-        arrow = <polygon points={`${startX},${dimY} ${startX - HLEN},${dimY - HW} ${startX - HLEN},${dimY + HW}`} fill={STROKE} />;
+        // tip at x1 (measured boundary) pointing right (inward)
+        arrow = <polygon points={`${x1},${dimY} ${x1 - HLEN},${dimY - HW} ${x1 - HLEN},${dimY + HW}`} fill={STROKE} />;
       } else {
         const endX = x2 + leader;
         labelEl = (
           <text x={(x2 + endX) / 2} y={labelY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
         );
         line = <line x1={x1} y1={dimY} x2={endX} y2={dimY} stroke={STROKE} strokeWidth={MED} />;
-        // tip at endX pointing left (inward)
-        arrow = <polygon points={`${endX},${dimY} ${endX + HLEN},${dimY - HW} ${endX + HLEN},${dimY + HW}`} fill={STROKE} />;
+        // tip at x2 (measured boundary) pointing left (inward)
+        arrow = <polygon points={`${x2},${dimY} ${x2 + HLEN},${dimY - HW} ${x2 + HLEN},${dimY + HW}`} fill={STROKE} />;
       }
       dim = <>{line}{arrow}</>;
     } else {
