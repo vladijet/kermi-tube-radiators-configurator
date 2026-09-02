@@ -13,7 +13,7 @@ const STROKE = '#5B5B5B';
 const THIN = 0.8;
 const MED = 1.2;
 const FONT = 11;
-const DIM = 40; // base offset of a dimension line from the object (~1.8× for clearance)
+const DIM = 50; // base offset of a dimension line from the object (~1.8× for clearance)
 const EXT = 6;  // extension-line overshoot
 
 // Dimension line: (x1,y1)-(x2,y2) are the measured object edges; the dim line is
@@ -231,13 +231,15 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       ))}
 
       {/* ===== front-view dimensions ===== */}
-      {/* Top: end-cap 12 (left) + B (sections length) + end-cap 12 (right) */}
-      <DimLine x1={bodyLeftX - OFFSET_12 * scale} y1={bodyTopY} x2={bodyLeftX} y2={bodyTopY} label="12" offset={DIM} side="top" />
-      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyRightX} y2={bodyTopY} label={`${B}`} offset={DIM} side="top" />
-      <DimLine x1={bodyRightX} y1={bodyTopY} x2={bodyRightX + OFFSET_12 * scale} y2={bodyTopY} label="12" offset={DIM} side="top" />
-      {/* Top inner: K (bracket spacing) moved from bottom to top */}
+      {/* Top: three stacked dimension levels (outermost → innermost) */}
+      {/* Level 1 (outermost): total width = body + both end caps */}
+      <DimLine x1={bodyLeftX - OFFSET_12 * scale} y1={bodyTopY} x2={bodyRightX + OFFSET_12 * scale} y2={bodyTopY} label={`${B + 2 * OFFSET_12}`} offset={DIM} side="top" />
+      {/* Level 2 (middle): body width + one end cap */}
+      <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyRightX} y2={bodyTopY} label={`${B}`} offset={DIM * 0.7} side="top" />
+      <DimLine x1={bodyRightX} y1={bodyTopY} x2={bodyRightX + OFFSET_12 * scale} y2={bodyTopY} label="12" offset={DIM * 0.7} side="top" />
+      {/* Level 3 (innermost): K bracket spacing */}
       {bracketCenters.length >= 2 && (
-        <DimLine x1={firstBx} y1={bodyTopY} x2={lastBx} y2={bodyTopY} label={`${K}`} offset={DIM * 0.75} side="top" />
+        <DimLine x1={firstBx} y1={bodyTopY} x2={lastBx} y2={bodyTopY} label={`${K}`} offset={DIM * 0.45} side="top" />
       )}
       {/* Left: H (body height) */}
       <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyLeftX} y2={bodyBottomY} label={`${H}`} offset={DIM} side="left" />
