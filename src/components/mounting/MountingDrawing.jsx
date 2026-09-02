@@ -36,7 +36,7 @@ function DimLine({ x1, y1, x2, y2, label, offset, side, tight, tightDir = 'right
       // leader, draw an explicit triangle whose point sits on the leader end
       // and faces inward toward the dimension span, place the value above.
       const leader = FONT * 1.6;
-      const HLEN = 9, HW = 4;
+      const HLEN = 11, HW = 2.25;
       const labelY = dimY + (side === 'top' ? -FONT * 0.7 : FONT * 0.7);
       let line, arrow;
       if (tightDir === 'left') {
