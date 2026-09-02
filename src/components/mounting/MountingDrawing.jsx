@@ -33,23 +33,30 @@ function DimLine({ x1, y1, x2, y2, label, offset, side, tight, tightDir = 'right
     );
     if (tight) {
       // Tight-space rule: drop the inner arrow, extend the line outward as a
-      // leader, keep a single arrow pointing inward at the leader end, and
-      // place the value above the extended line.
+      // leader, draw an explicit triangle whose point sits on the leader end
+      // and faces inward toward the dimension span, place the value above.
       const leader = FONT * 1.6;
+      const HLEN = 9, HW = 4;
       const labelY = dimY + (side === 'top' ? -FONT * 0.7 : FONT * 0.7);
+      let line, arrow;
       if (tightDir === 'left') {
         const startX = x1 - leader;
         labelEl = (
           <text x={(x1 + startX) / 2} y={labelY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
         );
-        dim = <line x1={startX} y1={dimY} x2={x2} y2={dimY} stroke={STROKE} strokeWidth={MED} markerStart="url(#dimArrowStart)" />;
+        line = <line x1={startX} y1={dimY} x2={x2} y2={dimY} stroke={STROKE} strokeWidth={MED} />;
+        // tip at startX pointing right (inward)
+        arrow = <polygon points={`${startX},${dimY} ${startX - HLEN},${dimY - HW} ${startX - HLEN},${dimY + HW}`} fill={STROKE} />;
       } else {
         const endX = x2 + leader;
         labelEl = (
           <text x={(x2 + endX) / 2} y={labelY} fontSize={FONT} fill={STROKE} textAnchor="middle" dominantBaseline="central" fontFamily="sans-serif">{label}</text>
         );
-        dim = <line x1={x1} y1={dimY} x2={endX} y2={dimY} stroke={STROKE} strokeWidth={MED} markerEnd="url(#dimArrowEnd)" />;
+        line = <line x1={x1} y1={dimY} x2={endX} y2={dimY} stroke={STROKE} strokeWidth={MED} />;
+        // tip at endX pointing left (inward)
+        arrow = <polygon points={`${endX},${dimY} ${endX + HLEN},${dimY - HW} ${endX + HLEN},${dimY + HW}`} fill={STROKE} />;
       }
+      dim = <>{line}{arrow}</>;
     } else {
       const labelY = dimY + (side === 'top' ? -FONT * 0.7 : FONT * 0.7);
       labelEl = (
