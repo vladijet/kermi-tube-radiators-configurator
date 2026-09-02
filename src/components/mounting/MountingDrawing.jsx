@@ -142,7 +142,8 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
           ventSide: computeVentSide(connectionCode, valveType),
           ventType: ventType || '',
           drainValve: drainValve || false,
-          hideArrows: true,
+          hideArrows: false,
+          interaxisTop: (H - N) / 2,
         });
         if (!cancelled) {
           const { viewBox: vb, inner: html } = parseServerSvg(res.data?.svg || '');
@@ -282,9 +283,6 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       )}
       {bracketCenters.length >= 1 && (
         <DimLine x1={firstBx} y1={bodyTopY} x2={firstBx} y2={fuHoleY} label="55" offset={DIM * 0.55} side="left" />
-      )}
-      {bracketCenters.length >= 1 && (
-        <DimLine x1={firstBx} y1={fdBottom} x2={firstBx} y2={bodyBottomY} label="100" offset={DIM * 0.55} side="left" />
       )}
 
       {/* ===== side view ===== */}

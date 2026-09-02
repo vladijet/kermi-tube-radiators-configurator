@@ -148,7 +148,7 @@ function calcL3(sections, cc) {
   return ((sections + 1) / 2) * 45 - 25; // cc === '96'
 }
 
-function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drainValve, hideArrows = false) {
+function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drainValve, hideArrows = false, interaxisTop) {
   const base = colorHex;
   const hi = lighten(base, 0.22);
   const sh = darken(base, 0.28);
@@ -280,8 +280,8 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
 
   const firstX = ELEM_W / 2;
   const lastX = (sections - 1) * PITCH + ELEM_W / 2;
-  const topY = HUB_CY;
-  const botY = H - HUB_CY;
+  const topY = (interaxisTop !== undefined && interaxisTop > 0) ? interaxisTop : HUB_CY;
+  const botY = (interaxisTop !== undefined && interaxisTop > 0) ? (H - interaxisTop) : (H - HUB_CY);
 
   // Arrow tips sit a "gap" away from the outer end-cap edges (no overlap)
   const leftTip = (hubLeftX - ecW) - gap;
@@ -340,8 +340,10 @@ Deno.serve(async (req) => {
     const ventType = String(params.ventType || '');
     const drainValve = String(params.drainValve || '') === 'true' || params.drainValve === true;
     const hideArrows = String(params.hideArrows || '') === 'true' || params.hideArrows === true;
+    const interaxisTopRaw = parseInt(params.interaxisTop, 10);
+    const interaxisTop = Number.isFinite(interaxisTopRaw) && interaxisTopRaw > 0 ? interaxisTopRaw : undefined;
 
-    const svg = buildSvg(sections, H, connectionCode, color, valveType, ventSide, ventType, drainValve, hideArrows);
+    const svg = buildSvg(sections, H, connectionCode, color, valveType, ventSide, ventType, drainValve, hideArrows, interaxisTop);
 
     if (req.method === 'GET') {
       return new Response(svg, {
