@@ -129,9 +129,11 @@ function buildLMarker(x, y) {
 
 // How far the tube's rounded cap protrudes beyond the manifold's outer edge
 const PROTR = 6;
-// Manifold inset from the radiator's top/bottom edge so the manifold (and end-cap)
-// centre sits at 35 mm (= INSET + ELEM_H/2), aligning with N = H − 70.
-const INSET = 5;
+// Collector axis = 35 mm from each edge (N = H − 70). The manifold is inset so its
+// hub centre lands exactly on 35 mm; end caps and flow arrows are pinned to 35.
+const COLLECTOR_AXIS = 35;
+// Manifold inset = COLLECTOR_AXIS − HUB_CY so the hub centre sits at 35 mm.
+const INSET = COLLECTOR_AXIS - HUB_CY;
 
 // Section pipe path, parametrised by height h
 function buildPipePath(h) {
@@ -217,8 +219,8 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
   // 3. End caps (assembled from el1–el4); reducer (el1) abuts the hub edge, cap body set back
   const hubLeftX = 0.2;
   const hubRightX = (sections - 1) * PITCH + 45.6;
-  const topCy = INSET + ELEM_H / 2;   // manifold/end-cap centre at 35 mm (N = H − 70)
-  const botCy = H - INSET - ELEM_H / 2;
+  const topCy = COLLECTOR_AXIS;   // end-cap / collector centre pinned to 35 mm (N = H − 70)
+  const botCy = H - COLLECTOR_AXIS;
   const ecW = 11.67;
   const ecYTop = topCy - 21.5;
   const ecYBot = botCy - 21.5;
@@ -284,8 +286,8 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
 
   const firstX = ELEM_W / 2;
   const lastX = (sections - 1) * PITCH + ELEM_W / 2;
-  const topY = (interaxisTop !== undefined && interaxisTop > 0) ? interaxisTop : (INSET + ELEM_H / 2);
-  const botY = (interaxisTop !== undefined && interaxisTop > 0) ? (H - interaxisTop) : (H - INSET - ELEM_H / 2);
+  const topY = (interaxisTop !== undefined && interaxisTop > 0) ? interaxisTop : COLLECTOR_AXIS;
+  const botY = (interaxisTop !== undefined && interaxisTop > 0) ? (H - interaxisTop) : (H - COLLECTOR_AXIS);
 
   // Arrow tips sit a "gap" away from the outer end-cap edges (no overlap)
   const leftTip = (hubLeftX - ecW) - gap;
