@@ -234,7 +234,8 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       {/* Top: three stacked dimension levels (outermost → innermost) */}
       {/* Level 1 (outermost): total width = body + both end caps */}
       <DimLine x1={bodyLeftX - OFFSET_12 * scale} y1={bodyTopY} x2={bodyRightX + OFFSET_12 * scale} y2={bodyTopY} label={`${B + 2 * OFFSET_12}`} offset={DIM} side="top" />
-      {/* Level 2 (middle): body width + one end cap */}
+      {/* Level 2 (middle): left end cap + body width + right end cap */}
+      <DimLine x1={bodyLeftX - OFFSET_12 * scale} y1={bodyTopY} x2={bodyLeftX} y2={bodyTopY} label="12" offset={DIM * 0.7} side="top" />
       <DimLine x1={bodyLeftX} y1={bodyTopY} x2={bodyRightX} y2={bodyTopY} label={`${B}`} offset={DIM * 0.7} side="top" />
       <DimLine x1={bodyRightX} y1={bodyTopY} x2={bodyRightX + OFFSET_12 * scale} y2={bodyTopY} label="12" offset={DIM * 0.7} side="top" />
       {/* Level 3 (innermost): K bracket spacing */}
@@ -275,9 +276,12 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       <svg x={wallLeftX - SIDE_DOWN.w * scale} y={fdBottom - SIDE_DOWN.h * scale} width={SIDE_DOWN.w * scale} height={SIDE_DOWN.h * scale} viewBox={`0 0 ${SIDE_DOWN.w} ${SIDE_DOWN.h}`} preserveAspectRatio="none"
         dangerouslySetInnerHTML={{ __html: sideDownInner(0) }} />
 
-      {/* ===== side-view dimensions ===== */}
-      <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`${T}`} offset={DIM * 1.3} side="top" />
-      <DimLine x1={radBackX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label="30" offset={DIM * 1.3} side="top" />
+      {/* ===== side-view dimensions (aligned with front-view top levels) ===== */}
+      {/* Level 1 (outermost): total wall-to-radiator-edge, aligned with front 834 */}
+      <DimLine x1={radFrontX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label={`${T + WALL_CLEARANCE_30}`} offset={DIM} side="top" />
+      {/* Level 2 (middle): depth + wall gap, aligned with front 810 */}
+      <DimLine x1={radFrontX} y1={bodyTopY} x2={radBackX} y2={bodyTopY} label={`${T}`} offset={DIM * 0.7} side="top" />
+      <DimLine x1={radBackX} y1={bodyTopY} x2={wallLeftX} y2={bodyTopY} label="30" offset={DIM * 0.7} side="top" />
       <DimLine x1={tubeCenterX} y1={bodyBottomY} x2={wallLeftX} y2={bodyBottomY} label={`${D}`} offset={DIM * 0.5} side="bottom" />
       <DimLine x1={wallLeftX} y1={fuHoleY} x2={wallLeftX} y2={fuHoleY + screwSpacing * scale} label={`${screwSpacing}`} offset={DIM} side="right" />
       <DimLine x1={wallLeftX} y1={fuHoleY} x2={wallLeftX} y2={floorY} label={`${C}`} offset={DIM * 2.3} side="right" />
