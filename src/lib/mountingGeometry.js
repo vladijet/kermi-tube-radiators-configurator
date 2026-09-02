@@ -12,8 +12,9 @@ export const SCREW_SPACING_100 = 100; // vertical distance between two anchor sc
 export const WALL_CLEARANCE_30 = 30; // gap between wall and radiator bracket
 export const A_FORMULA = 'T × 0,75';
 
-// Interaxis offset N = H - OFFSET per series (Cambiotherm confirmed -70; RRN/RRV -50).
-const N_OFFSET = { RRN: 50, RRV: 50, Cambiotherm: 70 };
+// Interaxis offset N = H - 70 for all series; the N dimension line and flow
+// arrows pass through the centre of the end cap / connection port (nOff = 35 mm).
+const N_OFFSET = 70;
 
 // Parse a Kermi model code into tubes / height / depth.
 // Model "XYYY": X = tubes (2-6), YYY = height / 10 (e.g. "3055" -> 3 tubes, 550 mm).
@@ -32,7 +33,7 @@ export function getMountingDimensions({ model, series, sections, height, tubes: 
   const H = Number(height) || parsed.height || 0;
   const T = DEPTH_BY_TUBES[tubes] || parsed.depth || 0;
   const B = (Number(sections) || 0) * SECTION_LENGTH;
-  const offset = N_OFFSET[series] ?? 50;
+  const offset = N_OFFSET;
   const N = Math.max(H - offset, 0);
   const A_BY_TUBES = { 2: 80, 3: 80, 4: 110, 5: 120, 6: 130 };
   const A = A_BY_TUBES[tubes] ?? 80; // floor clearance
