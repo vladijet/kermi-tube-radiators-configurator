@@ -129,6 +129,9 @@ function buildLMarker(x, y) {
 
 // How far the tube's rounded cap protrudes beyond the manifold's outer edge
 const PROTR = 6;
+// Manifold inset from the radiator's top/bottom edge so the manifold (and end-cap)
+// centre sits at 35 mm (= INSET + ELEM_H/2), aligning with N = H − 70.
+const INSET = 5;
 
 // Section pipe path, parametrised by height h
 function buildPipePath(h) {
@@ -164,10 +167,10 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
     <linearGradient id="pipeG" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="${sh}"/><stop offset="22%" stop-color="${base}"/><stop offset="45%" stop-color="${hi}"/><stop offset="55%" stop-color="${hi}"/><stop offset="78%" stop-color="${base}"/><stop offset="100%" stop-color="${sh}"/>
     </linearGradient>
-    <linearGradient id="mG" x1="0" y1="0" x2="0" y2="${ELEM_H}" gradientUnits="userSpaceOnUse">
+    <linearGradient id="mG" x1="0" y1="${INSET}" x2="0" y2="${INSET + ELEM_H}" gradientUnits="userSpaceOnUse">
       <stop offset="20%" stop-color="${accent}"/><stop offset="67%" stop-color="${base}"/>
     </linearGradient>
-    <linearGradient id="mGBot" x1="0" y1="${H}" x2="0" y2="${H - ELEM_H}" gradientUnits="userSpaceOnUse">
+    <linearGradient id="mGBot" x1="0" y1="${H - INSET}" x2="0" y2="${H - INSET - ELEM_H}" gradientUnits="userSpaceOnUse">
       <stop offset="20%" stop-color="${accent}"/><stop offset="67%" stop-color="${base}"/>
     </linearGradient>
   </defs>`);
@@ -176,7 +179,7 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
   if (cc === '89' || cc === '69' || cc === '96' || cc === '98' || cc === '68' || cc === '86') {
     const firstSecX = ELEM_W / 2;
     const lastSecX = (sections - 1) * PITCH + ELEM_W / 2;
-    const pipeTopY = H - (EL5_H - EL5_PROTR); // top sits inside the manifold; 20 units protrude below
+    const pipeTopY = (H - INSET) - (EL5_H - EL5_PROTR); // top sits inside the manifold; 20 units protrude below
     let pipeLeftX, pipeRightX;
     if (cc === '89') {
       // N89: right side (lastSecX & lastSecX-50)
@@ -199,22 +202,23 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
   // 1. Top & bottom manifold elements (behind tubes) — placed per section at 45 mm pitch
   for (let i = 0; i < sections; i++) {
     const x = i * PITCH;
-    p.push(`<path d="${MANIFOLD_PATH}" transform="translate(${x} 0)" fill="url(#mG)" stroke="${outline}" stroke-width="0.4"/>`);
-    p.push(`<path d="${MANIFOLD_PATH}" transform="translate(${x} ${H}) scale(1 -1)" fill="url(#mGBot)" stroke="${outline}" stroke-width="0.4"/>`);
+    p.push(`<path d="${MANIFOLD_PATH}" transform="translate(${x} ${INSET})" fill="url(#mG)" stroke="${outline}" stroke-width="0.4"/>`);
+    p.push(`<path d="${MANIFOLD_PATH}" transform="translate(${x} ${H - INSET}) scale(1 -1)" fill="url(#mGBot)" stroke="${outline}" stroke-width="0.4"/>`);
   }
 
-  // 2. Vertical tubes (in front of manifolds), protruding beyond the collector edges
-  const pipePathFull = buildPipePath(H + 2 * PROTR);
+  // 2. Vertical tubes (in front of manifolds) — span the full height 0…H so the
+  // rounded caps sit exactly at the radiator's top/bottom edges (total height = H).
+  const pipePathFull = buildPipePath(H);
   for (let i = 0; i < sections; i++) {
     const x = i * PITCH + ELEM_W / 2 - TUBE_R;
-    p.push(`<path d="${pipePathFull}" transform="translate(${x} ${-PROTR})" fill="url(#pipeG)" stroke="${outline}" stroke-width="0.5"/>`);
+    p.push(`<path d="${pipePathFull}" transform="translate(${x} 0)" fill="url(#pipeG)" stroke="${outline}" stroke-width="0.5"/>`);
   }
 
   // 3. End caps (assembled from el1–el4); reducer (el1) abuts the hub edge, cap body set back
   const hubLeftX = 0.2;
   const hubRightX = (sections - 1) * PITCH + 45.6;
-  const topCy = HUB_CY;
-  const botCy = H - HUB_CY;
+  const topCy = INSET + ELEM_H / 2;   // manifold/end-cap centre at 35 mm (N = H − 70)
+  const botCy = H - INSET - ELEM_H / 2;
   const ecW = 11.67;
   const ecYTop = topCy - 21.5;
   const ecYBot = botCy - 21.5;
@@ -280,14 +284,14 @@ function buildSvg(sections, H, cc, colorHex, valveType, ventSide, ventType, drai
 
   const firstX = ELEM_W / 2;
   const lastX = (sections - 1) * PITCH + ELEM_W / 2;
-  const topY = (interaxisTop !== undefined && interaxisTop > 0) ? interaxisTop : HUB_CY;
-  const botY = (interaxisTop !== undefined && interaxisTop > 0) ? (H - interaxisTop) : (H - HUB_CY);
+  const topY = (interaxisTop !== undefined && interaxisTop > 0) ? interaxisTop : (INSET + ELEM_H / 2);
+  const botY = (interaxisTop !== undefined && interaxisTop > 0) ? (H - interaxisTop) : (H - INSET - ELEM_H / 2);
 
   // Arrow tips sit a "gap" away from the outer end-cap edges (no overlap)
   const leftTip = (hubLeftX - ecW) - gap;
   const rightTip = (hubRightX + ecW) + gap;
   const pipeProtr = (cc === '89' || cc === '69' || cc === '96' || cc === '98' || cc === '68' || cc === '86') ? EL5_PROTR : 0;
-  const botTip = H + pipeProtr + gap;
+  const botTip = (H - INSET) + pipeProtr + gap;
 
   const hArr = (x1, x2, y, c) => {
     const d = x2 > x1 ? 1 : -1;
