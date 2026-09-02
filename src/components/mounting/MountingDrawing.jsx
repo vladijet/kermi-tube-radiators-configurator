@@ -156,7 +156,7 @@ export default function MountingDrawing({ dims, sections, height, connectionCode
       }
     }, 200);
     return () => { cancelled = true; clearTimeout(id); };
-  }, [sections, height, connectionCode, valveType, color, ventType, drainValve]);
+  }, [sections, height, connectionCode, valveType, color, ventType, drainValve, N]);
 
   if (!H || !B) return null;
   if (loading) {
